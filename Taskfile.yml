@@ -104,3 +104,22 @@ tasks:
       - task: lint
       - task: test
       - task: build
+
+  # Documentation site (Hugo)
+  docs-dev:
+    desc: Run Hugo development server with live reload
+    dir: docs-site
+    cmds:
+      - hugo server --buildDrafts --disableFastRender --baseURL http://localhost:1313/
+
+  docs-build:
+    desc: Build Hugo site for production
+    dir: docs-site
+    cmds:
+      - hugo --minify
+
+  docs-clean:
+    desc: Clean Hugo build artifacts
+    dir: docs-site
+    cmds:
+      - rm -rf public resources

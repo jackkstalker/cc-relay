@@ -12,9 +12,7 @@ const (
 	defaultConfigFile = "config.yaml"
 )
 
-var (
-	cfgFile string
-)
+var cfgFile string
 
 var rootCmd = &cobra.Command{
 	Use:   "cc-relay",

@@ -83,6 +83,75 @@ cc-relay --help
 cc-relay serve --help
 ```
 
+## API Endpoints
+
+### POST /v1/messages
+
+Proxies requests to the configured backend provider. This is the main endpoint used by Claude Code.
+
+- **Auth**: Required (x-api-key or Bearer token depending on config)
+- **Content-Type**: application/json
+- **Streaming**: Supports SSE streaming via `stream: true` in request body
+
+### GET /v1/models
+
+Lists all available models from all configured providers. This is a discovery endpoint.
+
+- **Auth**: Not required
+- **Response format**: Anthropic-compatible model list
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "claude-sonnet-4-5-20250514",
+      "object": "model",
+      "created": 1737500000,
+      "owned_by": "anthropic",
+      "provider": "anthropic-primary"
+    },
+    {
+      "id": "glm-4-plus",
+      "object": "model",
+      "created": 1737500000,
+      "owned_by": "zhipu",
+      "provider": "zai-primary"
+    }
+  ]
+}
+```
+
+Configure models in your provider config:
+
+```yaml
+providers:
+  - name: anthropic-primary
+    type: anthropic
+    enabled: true
+    models:
+      - claude-sonnet-4-5-20250514
+      - claude-opus-4-5-20250514
+    keys:
+      - key: "${ANTHROPIC_API_KEY}"
+
+  - name: zai-primary
+    type: zai
+    enabled: true
+    models:
+      - glm-4
+      - glm-4-plus
+    keys:
+      - key: "${ZAI_API_KEY}"
+```
+
+### GET /health
+
+Health check endpoint for load balancers and monitoring.
+
+- **Auth**: Not required
+- **Response**: `{"status":"ok"}`
+
 ## Authentication
 
 cc-relay supports multiple authentication methods for different Claude Code user types.

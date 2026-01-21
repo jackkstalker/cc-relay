@@ -14,7 +14,7 @@ func TestNewServer_CreatesValidServer(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	server := NewServer("127.0.0.1:0", handler)
+	server := NewServer("127.0.0.1:0", handler, false)
 
 	if server == nil {
 		t.Fatal("Expected non-nil server")
@@ -36,7 +36,7 @@ func TestNewServer_HasCorrectTimeouts(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	server := NewServer("127.0.0.1:0", handler)
+	server := NewServer("127.0.0.1:0", handler, false)
 
 	// Verify timeouts match documented values
 	if server.httpServer.ReadTimeout != 10*time.Second {
@@ -59,7 +59,7 @@ func TestNewServer_HasCorrectHandler(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	server := NewServer("127.0.0.1:0", handler)
+	server := NewServer("127.0.0.1:0", handler, false)
 
 	if server.httpServer.Handler == nil {
 		t.Error("Expected non-nil handler")
@@ -74,7 +74,7 @@ func TestServer_ListenAndServe_InvalidAddress(t *testing.T) {
 	})
 
 	// Use an invalid address that will fail to bind
-	server := NewServer("invalid-address:99999", handler)
+	server := NewServer("invalid-address:99999", handler, false)
 
 	err := server.ListenAndServe()
 	if err == nil {
@@ -89,7 +89,7 @@ func TestServer_Shutdown(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	server := NewServer("127.0.0.1:0", handler)
+	server := NewServer("127.0.0.1:0", handler, false)
 
 	// Start server in goroutine
 	serverDone := make(chan struct{})
@@ -116,5 +116,51 @@ func TestServer_Shutdown(t *testing.T) {
 		// OK
 	case <-time.After(5 * time.Second):
 		t.Error("Server did not shutdown in time")
+	}
+}
+
+func TestNewServer_HTTP2Enabled(t *testing.T) {
+	t.Parallel()
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	// Create server with HTTP/2 enabled
+	server := NewServer("127.0.0.1:0", handler, true)
+
+	if server == nil {
+		t.Fatal("Expected non-nil server")
+	}
+
+	if server.httpServer == nil {
+		t.Fatal("Expected non-nil httpServer")
+	}
+
+	if server.httpServer.Handler == nil {
+		t.Error("Expected non-nil handler (should be wrapped with h2c)")
+	}
+}
+
+func TestNewServer_HTTP2Disabled(t *testing.T) {
+	t.Parallel()
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	// Create server with HTTP/2 disabled
+	server := NewServer("127.0.0.1:0", handler, false)
+
+	if server == nil {
+		t.Fatal("Expected non-nil server")
+	}
+
+	if server.httpServer == nil {
+		t.Fatal("Expected non-nil httpServer")
+	}
+
+	if server.httpServer.Handler == nil {
+		t.Error("Expected non-nil handler")
 	}
 }

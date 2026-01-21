@@ -16,6 +16,10 @@ server:
   # Maximum concurrent requests (0 = unlimited)
   max_concurrent: 0
 
+  # Enable HTTP/2 cleartext (h2c) support for better multiplexing
+  # HTTP/2 provides improved performance for Claude Code's concurrent tool calls
+  enable_http2: true
+
   # --------------------------------------------------------------------------
   # Authentication
   # --------------------------------------------------------------------------

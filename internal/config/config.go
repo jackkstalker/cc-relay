@@ -29,6 +29,7 @@ type ServerConfig struct {
 	Auth          AuthConfig `yaml:"auth"`
 	TimeoutMS     int        `yaml:"timeout_ms"`
 	MaxConcurrent int        `yaml:"max_concurrent"`
+	EnableHTTP2   bool       `yaml:"enable_http2"` // Enable HTTP/2 cleartext (h2c) support
 }
 
 // AuthConfig defines authentication settings for the proxy.

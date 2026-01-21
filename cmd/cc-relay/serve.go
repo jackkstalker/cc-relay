@@ -139,7 +139,7 @@ func runServe(_ *cobra.Command, _ []string) error {
 	}
 
 	// Create server
-	server := proxy.NewServer(cfg.Server.Listen, handler)
+	server := proxy.NewServer(cfg.Server.Listen, handler, cfg.Server.EnableHTTP2)
 
 	// Graceful shutdown on SIGINT/SIGTERM
 	done := make(chan struct{})

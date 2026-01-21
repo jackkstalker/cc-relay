@@ -1,0 +1,166 @@
+/* CC-Relay Custom Styles - More Breathing Room */
+
+/* Better spacing for all sections */
+section {
+  margin: 4rem 0 !important;
+}
+
+h2 {
+  margin-top: 4rem !important;
+  margin-bottom: 2rem !important;
+}
+
+h3 {
+  margin-top: 3rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+p {
+  margin-bottom: 1.5rem !important;
+  line-height: 1.8 !important;
+}
+
+ul, ol {
+  margin-bottom: 2rem !important;
+}
+
+li {
+  margin-bottom: 0.75rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Glossy Feature Cards */
+.hx-card {
+  padding: 2.5rem !important;
+  margin-bottom: 2rem !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.hx-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hx-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.hx-card:hover::before {
+  opacity: 1;
+}
+
+/* HUGE Mermaid diagrams */
+.mermaid {
+  min-height: 500px !important;
+  padding: 3rem !important;
+  margin: 3rem 0 !important;
+}
+
+.mermaid svg {
+  min-height: 400px !important;
+  max-width: 100% !important;
+}
+
+/* Code blocks - more padding */
+pre {
+  padding: 2rem !important;
+  margin: 2rem 0 !important;
+  border-radius: 0.75rem !important;
+}
+
+/* Better button spacing */
+.hx-button {
+  margin: 0.5rem !important;
+  padding: 1rem 2rem !important;
+}
+
+/* Hero section spacing */
+.hextra-hero-container {
+  padding: 5rem 0 !important;
+}
+
+/* Feature grid spacing */
+.hx-feature-grid {
+  gap: 2rem !important;
+  margin: 3rem 0 !important;
+}
+
+/* Footer customization - Glossy style like Hextra */
+footer {
+  margin-top: 6rem !important;
+  padding: 3rem 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-powered-by {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0.7;
+  font-size: 0.875rem;
+  transition: opacity 0.3s ease;
+}
+
+.footer-powered-by:hover {
+  opacity: 1;
+}
+
+.footer-robot {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+}
+
+/* Documentation page - fix header hierarchy */
+.hx-content h1:first-of-type {
+  display: none; /* Hide redundant first h1 */
+}
+
+/* Responsive spacing adjustments */
+@media (max-width: 768px) {
+  section {
+    margin: 2rem 0 !important;
+  }
+
+  h2 {
+    margin-top: 2.5rem !important;
+  }
+
+  .mermaid {
+    min-height: 300px !important;
+    padding: 1.5rem !important;
+  }
+
+  .mermaid svg {
+    min-height: 250px !important;
+  }
+}
