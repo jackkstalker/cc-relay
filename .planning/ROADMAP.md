@@ -36,12 +36,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Parallel tool calls preserve tool_use_id correctly (no orphan tool_result errors)
   4. Invalid API keys return 401 errors before hitting backend providers
   5. Extended thinking content blocks stream correctly without errors
-**Plans**: TBD
+**Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md - Foundation: Config loading and Provider interface
+- [ ] 01-02-PLAN.md - HTTP Server and Auth middleware
+- [ ] 01-03-PLAN.md - Proxy handler with SSE streaming
+- [ ] 01-04-PLAN.md - CLI integration and route wiring
+- [ ] 01-05-PLAN.md - Integration testing and verification
 
 ### Phase 2: Multi-Key Pooling
 **Goal**: Enable multiple API keys per provider with rate limit tracking (RPM/TPM) and intelligent key selection
@@ -203,7 +205,7 @@ Plans:
   6. User can pass `--tui` flag to `serve` command to start daemon and TUI together
   7. Cost-based routing selects cheapest provider for given model
   8. Latency-based routing selects fastest provider based on historical latency
-  9. Model-based routing routes by model name pattern (claude-* → Anthropic, glm-* → Z.AI)
+  9. Model-based routing routes by model name pattern (claude-* -> Anthropic, glm-* -> Z.AI)
 **Plans**: TBD
 
 Plans:
@@ -213,11 +215,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Proxy (MVP) | 0/TBD | Not started | - |
+| 1. Core Proxy (MVP) | 0/5 | Ready to execute | - |
 | 2. Multi-Key Pooling | 0/TBD | Not started | - |
 | 3. Routing Strategies | 0/TBD | Not started | - |
 | 4. Circuit Breaker & Health | 0/TBD | Not started | - |
