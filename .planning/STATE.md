@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-20)
 ## Current Position
 
 Phase: 1 of 11 (Core Proxy)
-Plan: 9 of 9 in current phase (Wave 6 extension)
+Plan: 8 of 9 in current phase (Wave 6 extension)
 Status: Phase complete (with extensions)
-Last activity: 2026-01-21 — Completed 01-09-PLAN.md (Enhanced Debug Logging)
+Last activity: 2026-01-21 - Completed 01-08-PLAN.md (Subscription Token Support)
 
-Progress: [██████░░░░] 64% (7/11 plans)
+Progress: [██████░░░░] 73% (8/11 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 10 min
-- Total execution time: 1.13 hours
+- Total execution time: 1.27 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 (Core Proxy) | 7 | 68 min | 10 min |
+| 01 (Core Proxy) | 8 | 76 min | 9.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (4min), 01-04 (8min), 01-05 (15min), 01-06 (17min), 01-09 (8min)
-- Trend: Increasing for complex integration tasks, faster for verification tasks
+- Last 5 plans: 01-04 (8min), 01-05 (15min), 01-06 (17min), 01-09 (8min), 01-08 (8min)
+- Trend: Consistent 8-10 min for focused tasks, 15+ min for integration tasks
 
 *Updated after each plan completion*
 
@@ -75,9 +75,15 @@ Recent decisions affecting current work:
 **From 01-06 (Zerolog Integration):**
 - Use zerolog for structured logging (JSON and console formats)
 - Generate UUID v4 for request IDs when X-Request-ID header missing
-- Apply middleware in order: RequestID → Logging → Auth → Handler
+- Apply middleware in order: RequestID -> Logging -> Auth -> Handler
 - Use responseWriter wrapper to capture HTTP status codes
 - Log authentication attempts at Debug/Warn levels for security auditing
+
+**From 01-08 (Subscription Token Support):**
+- Option-D: Use existing BearerAuthenticator for subscription tokens (no special handling)
+- AllowSubscription is a user-friendly alias for AllowBearer
+- Passthrough mode: empty bearer_secret means any token is accepted, backend validates
+- IsBearerEnabled() method abstracts checking both AllowBearer and AllowSubscription
 
 **From 01-09 (Enhanced Debug Logging):**
 - Use httptrace for TLS metrics (DNS, connect, handshake timing)
@@ -96,13 +102,14 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 01-09-PLAN.md (Enhanced Debug Logging) - **PHASE 1 FULLY COMPLETE**
+Stopped at: Completed 01-08-PLAN.md (Subscription Token Support) - **PHASE 1 FULLY COMPLETE**
 Resume file: None
 
 **Phase 1 (Core Proxy) Milestone:**
-- All 7 plans completed successfully (5 core + 2 Wave 5/6 extensions)
+- All 8 plans completed successfully (5 core + 3 Wave 5/6 extensions)
 - Full end-to-end proxy working with real Anthropic API
 - Production-ready structured logging with zerolog
 - Request correlation and operational visibility
 - Enhanced debug logging with TLS metrics and --debug flag
+- Subscription token support for Claude Code Pro/Team users
 - Ready to begin Phase 2 (Multi-key pooling & rate limiting)
