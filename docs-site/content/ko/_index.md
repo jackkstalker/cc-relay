@@ -296,22 +296,22 @@ layout: hextra-home
     {{< hextra/feature-card
       title="시작하기"
       subtitle="설치, 설정 및 첫 실행"
-      link="/cc-relay/ko/docs/getting-started/"
+      link="/ko/docs/getting-started/"
     >}}
     {{< hextra/feature-card
       title="설정"
       subtitle="프로바이더 설정, 라우팅 전략 및 고급 옵션"
-      link="/cc-relay/ko/docs/configuration/"
+      link="/ko/docs/configuration/"
     >}}
     {{< hextra/feature-card
       title="아키텍처"
       subtitle="시스템 설계, 컴포넌트 및 API 호환성"
-      link="/cc-relay/ko/docs/architecture/"
+      link="/ko/docs/architecture/"
     >}}
     {{< hextra/feature-card
       title="API 레퍼런스"
       subtitle="HTTP 엔드포인트, 스트리밍 및 클라이언트 예제"
-      link="/cc-relay/ko/docs/api/"
+      link="/ko/docs/api/"
     >}}
   </div>
 </div>

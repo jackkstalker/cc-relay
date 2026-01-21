@@ -296,22 +296,22 @@ layout: hextra-home
     {{< hextra/feature-card
       title="Comenzar"
       subtitle="Instalacion, configuracion y primera ejecucion"
-      link="/cc-relay/es/docs/getting-started/"
+      link="/es/docs/getting-started/"
     >}}
     {{< hextra/feature-card
       title="Configuracion"
       subtitle="Configuracion de proveedores, estrategias de enrutamiento y opciones avanzadas"
-      link="/cc-relay/es/docs/configuration/"
+      link="/es/docs/configuration/"
     >}}
     {{< hextra/feature-card
       title="Arquitectura"
       subtitle="Diseno del sistema, componentes y compatibilidad de API"
-      link="/cc-relay/es/docs/architecture/"
+      link="/es/docs/architecture/"
     >}}
     {{< hextra/feature-card
       title="Referencia de API"
       subtitle="Endpoints HTTP, streaming y ejemplos de cliente"
-      link="/cc-relay/es/docs/api/"
+      link="/es/docs/api/"
     >}}
   </div>
 </div>

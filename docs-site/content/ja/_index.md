@@ -296,22 +296,22 @@ layout: hextra-home
     {{< hextra/feature-card
       title="はじめに"
       subtitle="インストール、設定、初回実行"
-      link="/cc-relay/ja/docs/getting-started/"
+      link="/ja/docs/getting-started/"
     >}}
     {{< hextra/feature-card
       title="設定"
       subtitle="プロバイダーのセットアップ、ルーティング戦略、詳細オプション"
-      link="/cc-relay/ja/docs/configuration/"
+      link="/ja/docs/configuration/"
     >}}
     {{< hextra/feature-card
       title="アーキテクチャ"
       subtitle="システム設計、コンポーネント、API 互換性"
-      link="/cc-relay/ja/docs/architecture/"
+      link="/ja/docs/architecture/"
     >}}
     {{< hextra/feature-card
       title="API リファレンス"
       subtitle="HTTP エンドポイント、ストリーミング、クライアント例"
-      link="/cc-relay/ja/docs/api/"
+      link="/ja/docs/api/"
     >}}
   </div>
 </div>
