@@ -54,7 +54,6 @@ linters:
     - govet         # Report suspicious constructs
     - ineffassign   # Detect ineffectual assignments
     - staticcheck   # Go static analysis
-    - typecheck     # Type checking
     - unused        # Check for unused constants, variables, functions and types
 
     # Additional quality linters
