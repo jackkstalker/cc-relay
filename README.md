@@ -184,6 +184,25 @@ routing:
   # Routes to cheapest provider that can handle the request
 ```
 
+### Z.AI Provider
+
+Z.AI (Zhipu AI) offers GLM models through an Anthropic-compatible API at ~1/7 the cost:
+
+```yaml
+providers:
+  - name: zai
+    type: zai
+    enabled: true
+    base_url: "https://api.z.ai/api/anthropic"
+    keys:
+      - key: "${ZAI_API_KEY}"
+    model_mapping:
+      "claude-sonnet-4-5-20250929": "GLM-4.7"
+      "claude-sonnet-4-5": "GLM-4.7"
+      "claude-haiku-4-5-20251001": "GLM-4.5-Air"
+      "claude-haiku-4-5": "GLM-4.5-Air"
+```
+
 ## Supported Providers
 
 | Provider      | Status     | Notes                                   |
@@ -217,7 +236,7 @@ cc-relay tui
 
 - [SPEC.md](SPEC.md) - Full technical specification
 - [llms.txt](llms.txt) - LLM-friendly project context
-- [config/example.yaml](config/example.yaml) - Configuration reference
+- [example.yaml](example.yaml) - Configuration reference
 
 ## Development
 
@@ -233,7 +252,7 @@ go build -o cc-relay ./cmd/cc-relay
 go test ./...
 
 # Run
-./cc-relay serve --config config/example.yaml
+./cc-relay serve --config example.yaml
 ```
 
 ## Roadmap
