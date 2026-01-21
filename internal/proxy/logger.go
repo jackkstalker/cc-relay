@@ -2,10 +2,12 @@ package proxy
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 
 	"github.com/google/uuid"
+	"github.com/mattn/go-isatty"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
@@ -22,12 +24,15 @@ const RequestIDKey ctxKey = "request_id"
 func NewLogger(cfg config.LoggingConfig) (zerolog.Logger, error) {
 	// Determine output writer
 	var output io.Writer
+	var outputFile *os.File
 
 	switch cfg.Output {
 	case "", "stdout":
 		output = os.Stdout
+		outputFile = os.Stdout
 	case "stderr":
 		output = os.Stderr
+		outputFile = os.Stderr
 	default:
 		// File output
 		f, err := os.OpenFile(cfg.Output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
@@ -36,15 +41,76 @@ func NewLogger(cfg config.LoggingConfig) (zerolog.Logger, error) {
 		}
 
 		output = f
+		outputFile = f
+	}
+
+	// Determine if we should use pretty console output
+	usePretty := false
+
+	switch cfg.Format {
+	case "pretty":
+		usePretty = true
+	case "console":
+		// Auto-detect: use pretty if stdout is a terminal
+		if outputFile != nil {
+			usePretty = isatty.IsTerminal(outputFile.Fd())
+		}
+	case "json":
+		usePretty = false
+	default:
+		// Default: auto-detect terminal
+		if outputFile != nil {
+			usePretty = isatty.IsTerminal(outputFile.Fd())
+		}
+	}
+
+	// Override with explicit Pretty flag if set
+	if cfg.Pretty {
+		usePretty = true
 	}
 
 	// Apply format
-	if cfg.Format == "console" || cfg.Pretty {
-		// Use ConsoleWriter for human-readable output
+	if usePretty {
+		// Use custom ConsoleWriter for beautiful output
 		consoleWriter := zerolog.ConsoleWriter{
 			Out:        output,
 			TimeFormat: "15:04:05",
-			NoColor:    !cfg.Pretty,
+			NoColor:    false,
+			// Custom format parts
+			FormatLevel: func(i interface{}) string {
+				var levelStr string
+				if ll, ok := i.(string); ok {
+					switch ll {
+					case "debug":
+						levelStr = "\033[36mDBG\033[0m" // Cyan
+					case "info":
+						levelStr = "\033[32mINF\033[0m" // Green
+					case "warn":
+						levelStr = "\033[33mWRN\033[0m" // Yellow
+					case "error":
+						levelStr = "\033[31mERR\033[0m" // Red
+					case "fatal":
+						levelStr = "\033[35mFTL\033[0m" // Magenta
+					case "panic":
+						levelStr = "\033[35mPNC\033[0m" // Magenta
+					default:
+						levelStr = ll
+					}
+				}
+				return levelStr
+			},
+			FormatMessage: func(i interface{}) string {
+				if i == nil {
+					return ""
+				}
+				return fmt.Sprintf("→ %s", i)
+			},
+			FormatFieldName: func(i interface{}) string {
+				return fmt.Sprintf("\033[2m%s=\033[0m", i) // Dim
+			},
+			FormatFieldValue: func(i interface{}) string {
+				return fmt.Sprintf("%s", i)
+			},
 		}
 		output = consoleWriter
 	}

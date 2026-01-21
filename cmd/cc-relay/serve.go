@@ -19,6 +19,11 @@ import (
 	"github.com/omarluq/cc-relay/internal/proxy"
 )
 
+var (
+	logLevel  string
+	logFormat string
+)
+
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the cc-relay proxy server",
@@ -29,6 +34,10 @@ to configured backend providers.`,
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
+
+	// Add logging flags
+	serveCmd.Flags().StringVar(&logLevel, "log-level", "", "log level (debug, info, warn, error) - overrides config")
+	serveCmd.Flags().StringVar(&logFormat, "log-format", "", "log format (json, pretty) - overrides config")
 }
 
 func runServe(_ *cobra.Command, _ []string) error {
@@ -46,6 +55,15 @@ func runServe(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
+	// Apply CLI flag overrides to logging config
+	if logLevel != "" {
+		cfg.Logging.Level = logLevel
+	}
+
+	if logFormat != "" {
+		cfg.Logging.Format = logFormat
+	}
+
 	// Setup logging from config
 	logger, err := proxy.NewLogger(cfg.Logging)
 	if err != nil {
@@ -56,26 +74,37 @@ func runServe(_ *cobra.Command, _ []string) error {
 	log.Logger = logger
 	zerolog.DefaultContextLogger = &logger
 
-	// Find first enabled Anthropic provider
+	// Find first enabled provider (anthropic or zai)
 	var provider providers.Provider
 
 	var providerKey string
 
 	for _, p := range cfg.Providers {
-		if p.Enabled && p.Type == "anthropic" {
-			provider = providers.NewAnthropicProvider(p.Name, p.BaseURL)
-
-			if len(p.Keys) > 0 {
-				providerKey = p.Keys[0].Key
-			}
-
-			break
+		if !p.Enabled {
+			continue
 		}
+
+		switch p.Type {
+		case "anthropic":
+			provider = providers.NewAnthropicProvider(p.Name, p.BaseURL)
+		case "zai":
+			provider = providers.NewZAIProvider(p.Name, p.BaseURL)
+		default:
+			continue
+		}
+
+		if len(p.Keys) > 0 {
+			providerKey = p.Keys[0].Key
+		}
+
+		log.Info().Str("provider", p.Name).Str("type", p.Type).Msg("using provider")
+
+		break
 	}
 
 	if provider == nil {
-		log.Error().Msg("no enabled anthropic provider found in config")
-		return errors.New("no enabled anthropic provider in config")
+		log.Error().Msg("no enabled provider found in config (supported types: anthropic, zai)")
+		return errors.New("no enabled provider in config")
 	}
 
 	// Setup routes
