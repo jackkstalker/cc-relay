@@ -296,22 +296,22 @@ layout: hextra-home
     {{< hextra/feature-card
       title="快速开始"
       subtitle="安装、配置和首次运行"
-      link="/zh/docs/getting-started/"
+      link="/zh-cn/docs/getting-started/"
     >}}
     {{< hextra/feature-card
       title="配置"
       subtitle="供应商设置、路由策略和高级选项"
-      link="/zh/docs/configuration/"
+      link="/zh-cn/docs/configuration/"
     >}}
     {{< hextra/feature-card
       title="架构"
       subtitle="系统设计、组件和 API 兼容性"
-      link="/zh/docs/architecture/"
+      link="/zh-cn/docs/architecture/"
     >}}
     {{< hextra/feature-card
       title="API 参考"
       subtitle="HTTP 端点、流式传输和客户端示例"
-      link="/zh/docs/api/"
+      link="/zh-cn/docs/api/"
     >}}
   </div>
 </div>
