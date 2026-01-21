@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-20)
 ## Current Position
 
 Phase: 1 of 11 (Core Proxy)
-Plan: 5 of 5 in current phase
-Status: Phase complete
-Last activity: 2026-01-21 — Completed 01-05-PLAN.md (Integration Testing)
+Plan: 6 of 6 in current phase (Wave 5 extension)
+Status: Phase complete (with extensions)
+Last activity: 2026-01-21 — Completed 01-06-PLAN.md (Zerolog Integration)
 
-Progress: [████░░░░░░] 45% (5/11 plans)
+Progress: [█████░░░░░] 55% (6/11 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 8 min
-- Total execution time: 0.72 hours
+- Total plans completed: 6
+- Average duration: 10 min
+- Total execution time: 1.00 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 (Core Proxy) | 5 | 43 min | 9 min |
+| 01 (Core Proxy) | 6 | 60 min | 10 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (11min), 01-02 (8min), 01-03 (4min), 01-04 (8min), 01-05 (15min)
-- Trend: Stable with variance (simple tasks 4-8min, complex tasks 11-15min)
+- Last 5 plans: 01-02 (8min), 01-03 (4min), 01-04 (8min), 01-05 (15min), 01-06 (17min)
+- Trend: Increasing for complex integration tasks (logging, testing)
 
 *Updated after each plan completion*
 
@@ -72,6 +72,13 @@ Recent decisions affecting current work:
 - Verify streaming behavior by checking event timing and sequence
 - Test tool_use_id preservation with actual tool calling flow
 
+**From 01-06 (Zerolog Integration):**
+- Use zerolog for structured logging (JSON and console formats)
+- Generate UUID v4 for request IDs when X-Request-ID header missing
+- Apply middleware in order: RequestID → Logging → Auth → Handler
+- Use responseWriter wrapper to capture HTTP status codes
+- Log authentication attempts at Debug/Warn levels for security auditing
+
 ### Pending Todos
 
 None yet.
@@ -83,10 +90,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 01-05-PLAN.md (Integration Testing) - **PHASE 1 COMPLETE**
+Stopped at: Completed 01-06-PLAN.md (Zerolog Integration) - **PHASE 1 COMPLETE WITH EXTENSIONS**
 Resume file: None
 
 **Phase 1 (Core Proxy) Milestone:**
-- All 5 plans completed successfully
+- All 6 plans completed successfully (5 core + 1 Wave 5 extension)
 - Full end-to-end proxy working with real Anthropic API
+- Production-ready structured logging with zerolog
+- Request correlation and operational visibility
 - Ready to begin Phase 2 (Multi-key pooling & rate limiting)
