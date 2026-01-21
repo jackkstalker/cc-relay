@@ -12,9 +12,9 @@ import (
 	"github.com/omarluq/cc-relay/internal/config"
 )
 
-// RequestIDKey is the context key for request IDs.
 type ctxKey string
 
+// RequestIDKey is the context key for request IDs.
 const RequestIDKey ctxKey = "request_id"
 
 // NewLogger creates a zerolog.Logger from LoggingConfig.
@@ -30,7 +30,7 @@ func NewLogger(cfg config.LoggingConfig) (zerolog.Logger, error) {
 		output = os.Stderr
 	default:
 		// File output
-		f, err := os.OpenFile(cfg.Output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		f, err := os.OpenFile(cfg.Output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err != nil {
 			return zerolog.Logger{}, err
 		}

@@ -85,8 +85,6 @@ func validateConfig(cfg *config.Config) error {
 }
 
 // findConfigFileForValidate searches for config file in default locations.
-//
-//nolint:goconst // config.yaml constant would be shared across subcommands
 func findConfigFileForValidate() string {
 	// Check current directory
 	if _, err := os.Stat("config.yaml"); err == nil {

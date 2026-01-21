@@ -50,7 +50,9 @@ func runStatus(_ *cobra.Command, _ []string) error {
 		fmt.Printf("✗ cc-relay is not running (%s)\n", cfg.Server.Listen)
 		return fmt.Errorf("server not reachable: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode == http.StatusOK {
 		fmt.Printf("✓ cc-relay is running (%s)\n", cfg.Server.Listen)
