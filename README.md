@@ -123,11 +123,11 @@ cc-relay tui
 ┌─────────────────────────────────────────────────────────────────┐
 │  cc-relay v0.1.0                              [q]uit [?]help    │
 ├─────────────────────────────────────────────────────────────────┤
-│  Strategy: simple-shuffle    Active: 3    Requests: 1,247      │
+│  Strategy: simple-shuffle    Active: 3    Requests: 1,247       │
 ├─────────────────────────────────────────────────────────────────┤
-│  ● anthropic     healthy   847 req   avg 234ms   [2 keys]      │
-│  ● zai           healthy   312 req   avg 189ms   [1 key]       │
-│  ○ ollama        degraded   88 req   avg 1.2s    [local]       │
+│  ● anthropic     healthy   847 req   avg 234ms   [2 keys]       │
+│  ● zai           healthy   312 req   avg 189ms   [1 key]        │
+│  ○ ollama        degraded   88 req   avg 1.2s    [local]        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
