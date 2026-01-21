@@ -54,8 +54,7 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     files:
       - README.md
-      - LICENSE*
-      - config/example.yaml
+      - example.yaml
 
 checksum:
   name_template: "checksums.txt"
