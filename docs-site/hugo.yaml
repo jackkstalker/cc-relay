@@ -2,8 +2,6 @@
 baseURL: 'https://omarluq.github.io/cc-relay/'
 languageCode: en-us
 title: CC-Relay - Multi-Provider LLM Proxy
-defaultContentLanguage: en
-defaultContentLanguageInSubdir: false
 
 # Copyright
 copyright: "© 2026 Omar Alani. All rights reserved."
@@ -62,14 +60,7 @@ params:
   head:
     css:
       - "css/custom.css"
-      - "css/architecture.css"
     links:
       - rel: "icon"
         type: "image/svg+xml"
         href: "/favicon.svg"
-
-# Language configuration for i18n
-languages:
-  en:
-    languageName: English
-    weight: 1
