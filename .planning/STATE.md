@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-20)
 ## Current Position
 
 Phase: 1 of 11 (Core Proxy)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-01-20 — Roadmap created
+Plan: 2 of 5 in current phase
+Status: In progress
+Last activity: 2026-01-21 — Completed 01-02-PLAN.md
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 18% (2/11 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: - min
-- Total execution time: 0.0 hours
+- Total plans completed: 2
+- Average duration: 8 min
+- Total execution time: 0.27 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 (Core Proxy) | 2 | 16 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: None yet
-- Trend: Not yet established
+- Last 5 plans: 01-01 (8min), 01-02 (8min)
+- Trend: Steady (consistent 8min per plan)
 
 *Updated after each plan completion*
 
@@ -42,7 +42,11 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-None yet — project just initialized.
+**From 01-02 (HTTP Server Foundation):**
+- Use SHA-256 hashing before constant-time comparison for API key validation
+- Set WriteTimeout to 600s to support 10+ minute Claude Code streaming operations
+- Pre-hash expected API key at middleware creation rather than per-request
+- Streaming timeout pattern: short ReadTimeout (10s) + long WriteTimeout (600s)
 
 ### Pending Todos
 
@@ -54,6 +58,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-20
-Stopped at: Roadmap and state initialization complete
+Last session: 2026-01-21
+Stopped at: Completed 01-02-PLAN.md (HTTP Server Foundation)
 Resume file: None
