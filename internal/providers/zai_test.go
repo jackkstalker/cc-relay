@@ -236,15 +236,16 @@ func TestZAIListModels_WithConfiguredModels(t *testing.T) {
 	}
 }
 
-func TestZAIListModels_Empty(t *testing.T) {
+func TestZAIListModels_Defaults(t *testing.T) {
 	t.Parallel()
 
 	provider := NewZAIProvider("test-zai", "")
 
 	result := provider.ListModels()
 
-	if len(result) != 0 {
-		t.Errorf("Expected 0 models when none configured, got %d", len(result))
+	// Should return default models when none configured
+	if len(result) != len(DefaultZAIModels) {
+		t.Errorf("Expected %d default models, got %d", len(DefaultZAIModels), len(result))
 	}
 }
 
@@ -255,7 +256,8 @@ func TestZAIListModels_NilModels(t *testing.T) {
 
 	result := provider.ListModels()
 
-	if len(result) != 0 {
-		t.Errorf("Expected 0 models when nil, got %d", len(result))
+	// nil models should use defaults
+	if len(result) != len(DefaultZAIModels) {
+		t.Errorf("Expected %d default models when nil, got %d", len(DefaultZAIModels), len(result))
 	}
 }

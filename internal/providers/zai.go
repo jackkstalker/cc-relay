@@ -9,6 +9,13 @@ const (
 	ZAIOwner = "zhipu"
 )
 
+// DefaultZAIModels are the default models available from Z.AI.
+var DefaultZAIModels = []string{
+	"GLM-4.7",
+	"GLM-4.5-Air",
+	"GLM-4-Plus",
+}
+
 // ZAIProvider implements the Provider interface for Z.AI's Anthropic-compatible API.
 // Z.AI (Zhipu AI) offers GLM models through an API that is compatible with Anthropic's
 // Messages API format, making it a drop-in replacement for cost optimization.
@@ -25,9 +32,15 @@ func NewZAIProvider(name, baseURL string) *ZAIProvider {
 
 // NewZAIProviderWithModels creates a new Z.AI provider with configured models.
 // If baseURL is empty, DefaultZAIBaseURL is used.
+// If models is empty, DefaultZAIModels are used.
 func NewZAIProviderWithModels(name, baseURL string, models []string) *ZAIProvider {
 	if baseURL == "" {
 		baseURL = DefaultZAIBaseURL
+	}
+
+	// Use default models if none configured
+	if len(models) == 0 {
+		models = DefaultZAIModels
 	}
 
 	return &ZAIProvider{

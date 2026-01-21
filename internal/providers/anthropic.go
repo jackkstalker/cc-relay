@@ -8,6 +8,13 @@ const (
 	AnthropicOwner = "anthropic"
 )
 
+// DefaultAnthropicModels are the default models available from Anthropic.
+var DefaultAnthropicModels = []string{
+	"claude-sonnet-4-5-20250514",
+	"claude-opus-4-5-20250514",
+	"claude-haiku-3-5-20241022",
+}
+
 // AnthropicProvider implements the Provider interface for Anthropic's API.
 // It embeds BaseProvider for common Anthropic-compatible functionality.
 type AnthropicProvider struct {
@@ -22,9 +29,15 @@ func NewAnthropicProvider(name, baseURL string) *AnthropicProvider {
 
 // NewAnthropicProviderWithModels creates a new Anthropic provider with configured models.
 // If baseURL is empty, DefaultAnthropicBaseURL is used.
+// If models is empty, DefaultAnthropicModels are used.
 func NewAnthropicProviderWithModels(name, baseURL string, models []string) *AnthropicProvider {
 	if baseURL == "" {
 		baseURL = DefaultAnthropicBaseURL
+	}
+
+	// Use default models if none configured
+	if len(models) == 0 {
+		models = DefaultAnthropicModels
 	}
 
 	return &AnthropicProvider{
