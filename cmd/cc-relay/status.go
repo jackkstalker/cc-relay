@@ -51,7 +51,9 @@ func runStatus(_ *cobra.Command, _ []string) error {
 		return fmt.Errorf("server not reachable: %w", err)
 	}
 	defer func() {
-		_ = resp.Body.Close()
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			log.Logger.Warn().Err(closeErr).Msg("Failed to close response body")
+		}
 	}()
 
 	if resp.StatusCode == http.StatusOK {
@@ -70,17 +72,17 @@ func runStatus(_ *cobra.Command, _ []string) error {
 
 func findConfigFileForStatus() string {
 	// Check current directory
-	if _, err := os.Stat("config.yaml"); err == nil {
-		return "config.yaml"
+	if _, err := os.Stat(defaultConfigFile); err == nil {
+		return defaultConfigFile
 	}
 	// Check ~/.config/cc-relay/
 	home, err := os.UserHomeDir()
 	if err == nil && home != "" {
-		p := filepath.Join(home, ".config", "cc-relay", "config.yaml")
+		p := filepath.Join(home, ".config", "cc-relay", defaultConfigFile)
 		if _, err := os.Stat(p); err == nil {
 			return p
 		}
 	}
 
-	return "config.yaml"
+	return defaultConfigFile
 }

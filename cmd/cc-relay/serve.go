@@ -122,21 +122,19 @@ func runServe(_ *cobra.Command, _ []string) error {
 }
 
 // findConfigFile searches for config.yaml in default locations.
-//
-
 func findConfigFile() string {
 	// Check current directory
-	if _, err := os.Stat("config.yaml"); err == nil {
-		return "config.yaml"
+	if _, err := os.Stat(defaultConfigFile); err == nil {
+		return defaultConfigFile
 	}
 	// Check ~/.config/cc-relay/
 	home, err := os.UserHomeDir()
 	if err == nil && home != "" {
-		p := filepath.Join(home, ".config", "cc-relay", "config.yaml")
+		p := filepath.Join(home, ".config", "cc-relay", defaultConfigFile)
 		if _, err := os.Stat(p); err == nil {
 			return p
 		}
 	}
 
-	return "config.yaml" // Default, will error if not found
+	return defaultConfigFile // Default, will error if not found
 }

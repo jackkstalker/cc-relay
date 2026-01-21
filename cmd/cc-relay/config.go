@@ -87,17 +87,17 @@ func validateConfig(cfg *config.Config) error {
 // findConfigFileForValidate searches for config file in default locations.
 func findConfigFileForValidate() string {
 	// Check current directory
-	if _, err := os.Stat("config.yaml"); err == nil {
-		return "config.yaml"
+	if _, err := os.Stat(defaultConfigFile); err == nil {
+		return defaultConfigFile
 	}
 	// Check ~/.config/cc-relay/
 	home, err := os.UserHomeDir()
 	if err == nil && home != "" {
-		p := filepath.Join(home, ".config", "cc-relay", "config.yaml")
+		p := filepath.Join(home, ".config", "cc-relay", defaultConfigFile)
 		if _, err := os.Stat(p); err == nil {
 			return p
 		}
 	}
 
-	return "config.yaml"
+	return defaultConfigFile
 }

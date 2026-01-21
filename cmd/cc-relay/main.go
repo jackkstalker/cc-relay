@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	defaultConfigFile = "config.yaml"
+)
+
 var (
 	cfgFile string
 )
@@ -23,7 +27,7 @@ rate limit pooling, and intelligent routing.`,
 func init() {
 	// Global flags available to all subcommands
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "",
-		"config file path (default: ./config.yaml or ~/.config/cc-relay/config.yaml)")
+		"config file path (default: ./"+defaultConfigFile+" or ~/.config/cc-relay/"+defaultConfigFile+")")
 }
 
 func main() {
