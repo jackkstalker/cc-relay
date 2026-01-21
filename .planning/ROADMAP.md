@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Parallel tool calls preserve tool_use_id correctly (no orphan tool_result errors)
   4. Invalid API keys return 401 errors before hitting backend providers
   5. Extended thinking content blocks stream correctly without errors
-**Plans**: 8 plans in 6 waves
+**Plans**: 9 plans in 6 waves
 
 Plans:
 - [x] 01-01-PLAN.md - Foundation: Config loading and Provider interface
@@ -47,6 +47,7 @@ Plans:
 - [x] 01-06-PLAN.md - Structured logging with zerolog
 - [x] 01-07-PLAN.md - CLI Subcommands (serve, status, config validate, version)
 - [ ] 01-08-PLAN.md - Claude Code subscription token support
+- [ ] 01-09-PLAN.md - Enhanced debug logging (request/response details, TLS metrics)
 
 ### Phase 2: Multi-Key Pooling
 **Goal**: Enable multiple API keys per provider with rate limit tracking (RPM/TPM) and intelligent key selection
@@ -222,7 +223,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Proxy (MVP) | 7/8 | In progress | - |
+| 1. Core Proxy (MVP) | 7/9 | In progress | - |
 | 2. Multi-Key Pooling | 0/TBD | Not started | - |
 | 3. Routing Strategies | 0/TBD | Not started | - |
 | 4. Circuit Breaker & Health | 0/TBD | Not started | - |
