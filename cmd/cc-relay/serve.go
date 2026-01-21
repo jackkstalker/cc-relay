@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -11,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/omarluq/cc-relay/internal/config"
@@ -31,10 +32,6 @@ func init() {
 }
 
 func runServe(_ *cobra.Command, _ []string) error {
-	// Setup logging
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	slog.SetDefault(logger)
-
 	// Determine config path
 	configPath := cfgFile
 	if configPath == "" {
@@ -44,9 +41,20 @@ func runServe(_ *cobra.Command, _ []string) error {
 	// Load config
 	cfg, err := config.Load(configPath)
 	if err != nil {
-		slog.Error("failed to load config", "error", err, "path", configPath)
+		// Use fallback logger for config load error
+		log.Error().Err(err).Str("path", configPath).Msg("failed to load config")
 		return err
 	}
+
+	// Setup logging from config
+	logger, err := proxy.NewLogger(cfg.Logging)
+	if err != nil {
+		// Fallback to console logger for error reporting
+		log.Fatal().Err(err).Msg("failed to initialize logger")
+	}
+
+	log.Logger = logger
+	zerolog.DefaultContextLogger = &logger
 
 	// Find first enabled Anthropic provider
 	var provider providers.Provider
@@ -66,14 +74,14 @@ func runServe(_ *cobra.Command, _ []string) error {
 	}
 
 	if provider == nil {
-		slog.Error("no enabled anthropic provider found in config")
+		log.Error().Msg("no enabled anthropic provider found in config")
 		return errors.New("no enabled anthropic provider in config")
 	}
 
 	// Setup routes
 	handler, err := proxy.SetupRoutes(cfg, provider, providerKey)
 	if err != nil {
-		slog.Error("failed to setup routes", "error", err)
+		log.Error().Err(err).Msg("failed to setup routes")
 		return err
 	}
 
@@ -87,28 +95,28 @@ func runServe(_ *cobra.Command, _ []string) error {
 		signal.Notify(sigint, os.Interrupt, syscall.SIGTERM)
 		<-sigint
 
-		slog.Info("shutting down...")
+		log.Info().Msg("shutting down...")
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			slog.Error("shutdown error", "error", err)
+			log.Error().Err(err).Msg("shutdown error")
 		}
 
 		close(done)
 	}()
 
 	// Start server
-	slog.Info("starting cc-relay", "listen", cfg.Server.Listen)
+	log.Info().Str("listen", cfg.Server.Listen).Msg("starting cc-relay")
 
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		slog.Error("server error", "error", err)
+		log.Error().Err(err).Msg("server error")
 		return err
 	}
 
 	<-done
-	slog.Info("server stopped")
+	log.Info().Msg("server stopped")
 
 	return nil
 }

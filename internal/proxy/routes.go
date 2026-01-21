@@ -22,12 +22,18 @@ func SetupRoutes(cfg *config.Config, provider providers.Provider, providerKey st
 		return nil, fmt.Errorf("failed to create handler: %w", err)
 	}
 
-	// Apply auth middleware if proxy API key is configured
-	// (cfg.Server.APIKey is the key clients must use to access proxy)
+	// Apply middleware in order:
+	// 1. RequestIDMiddleware (first - generates ID)
+	// 2. LoggingMiddleware (second - logs with ID)
+	// 3. AuthMiddleware (third - auth logs include ID)
+	// 4. Handler
 	var messagesHandler http.Handler = handler
 	if cfg.Server.APIKey != "" {
-		messagesHandler = AuthMiddleware(cfg.Server.APIKey)(handler)
+		messagesHandler = AuthMiddleware(cfg.Server.APIKey)(messagesHandler)
 	}
+
+	messagesHandler = LoggingMiddleware()(messagesHandler)
+	messagesHandler = RequestIDMiddleware()(messagesHandler)
 
 	// Register routes
 	mux.Handle("POST /v1/messages", messagesHandler)

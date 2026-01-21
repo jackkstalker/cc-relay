@@ -7,6 +7,8 @@ import (
 	"net/http/httputil"
 	"net/url"
 
+	"github.com/rs/zerolog"
+
 	"github.com/omarluq/cc-relay/internal/providers"
 )
 
@@ -71,5 +73,16 @@ func NewHandler(provider providers.Provider, apiKey string) (*Handler, error) {
 
 // ServeHTTP handles the proxy request.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	logger := zerolog.Ctx(r.Context()).With().
+		Str("provider", h.provider.Name()).
+		Str("backend_url", h.provider.BaseURL()).
+		Logger()
+
+	// Update context with provider-aware logger
+	r = r.WithContext(logger.WithContext(r.Context()))
+
+	// Log proxy start
+	logger.Debug().Msg("proxying request to backend")
+
 	h.proxy.ServeHTTP(w, r)
 }

@@ -1,6 +1,10 @@
 package providers
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/rs/zerolog/log"
+)
 
 const (
 	// DefaultAnthropicBaseURL is the default Anthropic API base URL.
@@ -40,6 +44,12 @@ func (p *AnthropicProvider) BaseURL() string {
 // Sets the x-api-key header with the provided API key.
 func (p *AnthropicProvider) Authenticate(req *http.Request, key string) error {
 	req.Header.Set("x-api-key", key)
+
+	// Log authentication (key is redacted for security)
+	log.Ctx(req.Context()).Debug().
+		Str("provider", p.name).
+		Msg("added authentication header")
+
 	return nil
 }
 
