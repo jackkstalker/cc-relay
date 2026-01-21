@@ -1,5 +1,5 @@
 # cc-relay Example Configuration
-# 
+#
 # Copy this file to ~/.config/cc-relay/config.yaml and customize for your setup.
 # Environment variables can be used with ${VAR_NAME} syntax.
 
@@ -9,12 +9,36 @@
 server:
   # Address to listen on (Claude Code connects here)
   listen: "127.0.0.1:8787"
-  
+
   # Request timeout in milliseconds (10 minutes default for long operations)
   timeout_ms: 600000
-  
+
   # Maximum concurrent requests (0 = unlimited)
   max_concurrent: 0
+
+  # --------------------------------------------------------------------------
+  # Authentication
+  # --------------------------------------------------------------------------
+  # cc-relay supports multiple authentication methods. Enable one or more:
+  #
+  # 1. API Key (x-api-key header) - For Anthropic API key users
+  # 2. Bearer Token (Authorization: Bearer) - Generic OAuth/token auth
+  # 3. Subscription Token - For Claude Code subscription users (alias for Bearer)
+  #
+  # All enabled methods are tried in order; first success wins.
+  auth:
+    # API key authentication (optional)
+    # Set this to require clients to send a specific x-api-key header
+    # api_key: "${PROXY_API_KEY}"
+
+    # Claude Code subscription token support (recommended for subscription users)
+    # Enable this to accept Authorization: Bearer tokens from Claude Code
+    # The token is passed through to Anthropic for validation
+    allow_subscription: true
+
+    # Alternative: use allow_bearer for generic Bearer token auth
+    # allow_bearer: true
+    # bearer_secret: ""  # Empty = accept any bearer token (passthrough mode)
 
 # ============================================================================
 # Routing Configuration

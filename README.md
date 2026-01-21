@@ -83,9 +83,71 @@ cc-relay --help
 cc-relay serve --help
 ```
 
+## Authentication
+
+cc-relay supports multiple authentication methods for different Claude Code user types.
+
+### API Key Users
+
+If you have an Anthropic API key (starts with `sk-ant-...`):
+
+```bash
+# Start cc-relay
+cc-relay serve
+
+# Configure Claude Code to use proxy
+export ANTHROPIC_BASE_URL="http://localhost:8787"
+export ANTHROPIC_API_KEY="sk-ant-..."  # Your actual API key
+claude
+```
+
+cc-relay configuration:
+
+```yaml
+server:
+  auth:
+    api_key: "${PROXY_API_KEY}"  # Optional: require specific proxy auth key
+```
+
+### Subscription Users (Claude Code Pro/Team)
+
+If you use Claude Code with a subscription (no API key required):
+
+1. Configure cc-relay to accept subscription tokens:
+
+```yaml
+server:
+  auth:
+    allow_subscription: true  # Accept subscription tokens
+```
+
+2. Use Claude Code normally - the token is passed through to Anthropic:
+
+```bash
+export ANTHROPIC_BASE_URL="http://localhost:8787"
+claude
+```
+
+**How it works:** Claude Code subscription users authenticate via `Authorization: Bearer` tokens. cc-relay accepts these tokens in passthrough mode and forwards them to Anthropic for validation.
+
+**Security Note:** Subscription tokens are as sensitive as API keys. Never commit them to version control or share them publicly.
+
+### Multiple Auth Methods
+
+You can enable multiple auth methods simultaneously. The proxy tries them in order until one succeeds:
+
+```yaml
+server:
+  auth:
+    api_key: "${PROXY_API_KEY}"     # Method 1: x-api-key header
+    allow_subscription: true         # Method 2: Bearer token (subscription)
+    allow_bearer: true               # Method 3: Generic Bearer token
+    bearer_secret: ""                # Empty = accept any bearer token
+```
+
 ## Configuration
 
-See [config/example.yaml](config/example.yaml) for full configuration options.
+See [example.yaml](example.yaml) for full configuration options.
 
 ### Multiple API Keys
 
