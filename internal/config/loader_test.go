@@ -206,3 +206,142 @@ logging:
 		t.Errorf("Expected api_key=my-secret-key, got %s", cfg.Server.APIKey)
 	}
 }
+
+func TestLoad_ProviderModels(t *testing.T) {
+	t.Parallel()
+
+	yamlContent := `
+server:
+  listen: "127.0.0.1:8787"
+
+providers:
+  - name: "anthropic-primary"
+    type: "anthropic"
+    enabled: true
+    models:
+      - "claude-sonnet-4-5-20250514"
+      - "claude-opus-4-5-20250514"
+      - "claude-haiku-3-5-20241022"
+    keys:
+      - key: "sk-ant-test"
+
+logging:
+  level: "info"
+`
+
+	cfg, err := LoadFromReader(strings.NewReader(yamlContent))
+	if err != nil {
+		t.Fatalf("LoadFromReader failed: %v", err)
+	}
+
+	if len(cfg.Providers) != 1 {
+		t.Fatalf("Expected 1 provider, got %d", len(cfg.Providers))
+	}
+
+	provider := cfg.Providers[0]
+	if len(provider.Models) != 3 {
+		t.Fatalf("Expected 3 models, got %d", len(provider.Models))
+	}
+
+	expectedModels := []string{
+		"claude-sonnet-4-5-20250514",
+		"claude-opus-4-5-20250514",
+		"claude-haiku-3-5-20241022",
+	}
+
+	for i, expected := range expectedModels {
+		if provider.Models[i] != expected {
+			t.Errorf("Expected model[%d]=%s, got %s", i, expected, provider.Models[i])
+		}
+	}
+}
+
+func TestLoad_ProviderModelsEmpty(t *testing.T) {
+	t.Parallel()
+
+	yamlContent := `
+server:
+  listen: "127.0.0.1:8787"
+
+providers:
+  - name: "anthropic"
+    type: "anthropic"
+    enabled: true
+    keys:
+      - key: "sk-ant-test"
+
+logging:
+  level: "info"
+`
+
+	cfg, err := LoadFromReader(strings.NewReader(yamlContent))
+	if err != nil {
+		t.Fatalf("LoadFromReader failed: %v", err)
+	}
+
+	if len(cfg.Providers) != 1 {
+		t.Fatalf("Expected 1 provider, got %d", len(cfg.Providers))
+	}
+
+	// Models should be empty (nil or empty slice)
+	if len(cfg.Providers[0].Models) != 0 {
+		t.Errorf("Expected empty models, got %d", len(cfg.Providers[0].Models))
+	}
+}
+
+func TestLoad_MultipleProvidersWithModels(t *testing.T) {
+	t.Parallel()
+
+	yamlContent := `
+server:
+  listen: "127.0.0.1:8787"
+
+providers:
+  - name: "anthropic-primary"
+    type: "anthropic"
+    enabled: true
+    models:
+      - "claude-sonnet-4-5-20250514"
+    keys:
+      - key: "sk-ant-test"
+  - name: "zai-primary"
+    type: "zai"
+    enabled: true
+    models:
+      - "glm-4"
+      - "glm-4-plus"
+    keys:
+      - key: "zai-key"
+
+logging:
+  level: "info"
+`
+
+	cfg, err := LoadFromReader(strings.NewReader(yamlContent))
+	if err != nil {
+		t.Fatalf("LoadFromReader failed: %v", err)
+	}
+
+	if len(cfg.Providers) != 2 {
+		t.Fatalf("Expected 2 providers, got %d", len(cfg.Providers))
+	}
+
+	// First provider
+	if len(cfg.Providers[0].Models) != 1 {
+		t.Errorf("Expected 1 model for anthropic, got %d", len(cfg.Providers[0].Models))
+	}
+	if cfg.Providers[0].Models[0] != "claude-sonnet-4-5-20250514" {
+		t.Errorf("Expected claude-sonnet-4-5-20250514, got %s", cfg.Providers[0].Models[0])
+	}
+
+	// Second provider
+	if len(cfg.Providers[1].Models) != 2 {
+		t.Errorf("Expected 2 models for zai, got %d", len(cfg.Providers[1].Models))
+	}
+	if cfg.Providers[1].Models[0] != "glm-4" {
+		t.Errorf("Expected glm-4, got %s", cfg.Providers[1].Models[0])
+	}
+	if cfg.Providers[1].Models[1] != "glm-4-plus" {
+		t.Errorf("Expected glm-4-plus, got %s", cfg.Providers[1].Models[1])
+	}
+}

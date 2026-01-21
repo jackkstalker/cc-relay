@@ -2,6 +2,7 @@ package providers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/rs/zerolog/log"
 )
@@ -15,11 +16,18 @@ const (
 type AnthropicProvider struct {
 	name    string
 	baseURL string
+	models  []string
 }
 
 // NewAnthropicProvider creates a new Anthropic provider instance.
 // If baseURL is empty, DefaultAnthropicBaseURL is used.
 func NewAnthropicProvider(name, baseURL string) *AnthropicProvider {
+	return NewAnthropicProviderWithModels(name, baseURL, nil)
+}
+
+// NewAnthropicProviderWithModels creates a new Anthropic provider with configured models.
+// If baseURL is empty, DefaultAnthropicBaseURL is used.
+func NewAnthropicProviderWithModels(name, baseURL string, models []string) *AnthropicProvider {
 	if baseURL == "" {
 		baseURL = DefaultAnthropicBaseURL
 	}
@@ -27,6 +35,7 @@ func NewAnthropicProvider(name, baseURL string) *AnthropicProvider {
 	return &AnthropicProvider{
 		name:    name,
 		baseURL: baseURL,
+		models:  models,
 	}
 }
 
@@ -77,4 +86,31 @@ func (p *AnthropicProvider) ForwardHeaders(originalHeaders http.Header) http.Hea
 // SupportsStreaming indicates that Anthropic supports SSE streaming.
 func (p *AnthropicProvider) SupportsStreaming() bool {
 	return true
+}
+
+// Owner returns the owner identifier for Anthropic.
+func (p *AnthropicProvider) Owner() string {
+	return "anthropic"
+}
+
+// ListModels returns the list of available models for this provider.
+func (p *AnthropicProvider) ListModels() []Model {
+	if len(p.models) == 0 {
+		return []Model{}
+	}
+
+	result := make([]Model, len(p.models))
+	now := time.Now().Unix()
+
+	for i, modelID := range p.models {
+		result[i] = Model{
+			ID:       modelID,
+			Object:   "model",
+			Created:  now,
+			OwnedBy:  p.Owner(),
+			Provider: p.name,
+		}
+	}
+
+	return result
 }

@@ -65,3 +65,92 @@ func TestLoggingConfig_ParseLevel(t *testing.T) {
 		})
 	}
 }
+
+func TestAuthConfig_IsEnabled(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		config   AuthConfig
+		expected bool
+	}{
+		{
+			name:     "no auth configured",
+			config:   AuthConfig{},
+			expected: false,
+		},
+		{
+			name:     "api key only",
+			config:   AuthConfig{APIKey: "test-key"},
+			expected: true,
+		},
+		{
+			name:     "bearer only",
+			config:   AuthConfig{AllowBearer: true},
+			expected: true,
+		},
+		{
+			name:     "both configured",
+			config:   AuthConfig{APIKey: "test-key", AllowBearer: true},
+			expected: true,
+		},
+		{
+			name:     "bearer secret without allow bearer",
+			config:   AuthConfig{BearerSecret: "secret"},
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.config.IsEnabled()
+			if got != tt.expected {
+				t.Errorf("IsEnabled() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestServerConfig_GetEffectiveAPIKey(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		config   ServerConfig
+		expected string
+	}{
+		{
+			name:     "no api key",
+			config:   ServerConfig{},
+			expected: "",
+		},
+		{
+			name:     "legacy api key only",
+			config:   ServerConfig{APIKey: "legacy-key"},
+			expected: "legacy-key",
+		},
+		{
+			name:     "auth api key only",
+			config:   ServerConfig{Auth: AuthConfig{APIKey: "auth-key"}},
+			expected: "auth-key",
+		},
+		{
+			name:     "both - auth takes precedence",
+			config:   ServerConfig{APIKey: "legacy-key", Auth: AuthConfig{APIKey: "auth-key"}},
+			expected: "auth-key",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.config.GetEffectiveAPIKey()
+			if got != tt.expected {
+				t.Errorf("GetEffectiveAPIKey() = %q, want %q", got, tt.expected)
+			}
+		})
+	}
+}

@@ -203,3 +203,11 @@ func (m *mockProvider) ForwardHeaders(originalHeaders http.Header) http.Header {
 func (m *mockProvider) SupportsStreaming() bool {
 	return true
 }
+
+func (m *mockProvider) Owner() string {
+	return "mock"
+}
+
+func (m *mockProvider) ListModels() []providers.Model {
+	return nil
+}

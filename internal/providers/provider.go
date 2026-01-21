@@ -3,6 +3,16 @@ package providers
 
 import "net/http"
 
+// Model represents an available model from a provider.
+// This matches the Anthropic/OpenAI model list response format.
+type Model struct {
+	ID       string `json:"id"`
+	Object   string `json:"object"`
+	Created  int64  `json:"created"`
+	OwnedBy  string `json:"owned_by"`
+	Provider string `json:"provider"`
+}
+
 // Provider defines the interface for LLM backend providers.
 // All provider implementations must implement this interface to be compatible with cc-relay.
 type Provider interface {
@@ -11,6 +21,9 @@ type Provider interface {
 
 	// BaseURL returns the backend API base URL.
 	BaseURL() string
+
+	// Owner returns the owner identifier (e.g., "anthropic", "zhipu").
+	Owner() string
 
 	// Authenticate adds provider-specific authentication to the request.
 	// The key parameter is the API key to use for authentication.
@@ -22,4 +35,7 @@ type Provider interface {
 
 	// SupportsStreaming indicates if the provider supports SSE streaming.
 	SupportsStreaming() bool
+
+	// ListModels returns the list of available models for this provider.
+	ListModels() []Model
 }

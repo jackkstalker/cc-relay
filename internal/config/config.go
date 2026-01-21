@@ -16,10 +16,39 @@ type Config struct {
 
 // ServerConfig defines server-level settings.
 type ServerConfig struct {
-	Listen        string `yaml:"listen"`
-	APIKey        string `yaml:"api_key"`
-	TimeoutMS     int    `yaml:"timeout_ms"`
-	MaxConcurrent int    `yaml:"max_concurrent"`
+	Listen        string     `yaml:"listen"`
+	APIKey        string     `yaml:"api_key"`         // Legacy: use Auth.APIKey instead
+	TimeoutMS     int        `yaml:"timeout_ms"`
+	MaxConcurrent int        `yaml:"max_concurrent"`
+	Auth          AuthConfig `yaml:"auth"`
+}
+
+// AuthConfig defines authentication settings for the proxy.
+type AuthConfig struct {
+	// APIKey is the expected value for x-api-key header authentication.
+	// If empty, API key authentication is disabled.
+	APIKey string `yaml:"api_key"`
+
+	// AllowBearer enables Authorization: Bearer token authentication.
+	// Used by Claude Code subscription users.
+	AllowBearer bool `yaml:"allow_bearer"`
+
+	// BearerSecret is the expected Bearer token value.
+	// If empty but AllowBearer is true, any bearer token is accepted.
+	BearerSecret string `yaml:"bearer_secret"`
+}
+
+// IsEnabled returns true if any authentication method is configured.
+func (a *AuthConfig) IsEnabled() bool {
+	return a.APIKey != "" || a.AllowBearer
+}
+
+// GetEffectiveAPIKey returns the API key from Auth config or falls back to legacy ServerConfig.APIKey.
+func (s *ServerConfig) GetEffectiveAPIKey() string {
+	if s.Auth.APIKey != "" {
+		return s.Auth.APIKey
+	}
+	return s.APIKey
 }
 
 // ProviderConfig defines configuration for a backend LLM provider.
@@ -29,6 +58,7 @@ type ProviderConfig struct {
 	Type         string            `yaml:"type"`
 	BaseURL      string            `yaml:"base_url"`
 	Keys         []KeyConfig       `yaml:"keys"`
+	Models       []string          `yaml:"models"`
 	Enabled      bool              `yaml:"enabled"`
 }
 
