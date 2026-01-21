@@ -30,3 +30,4 @@ tmp/
 
 
 .claude/cache/*
+.claude/tsc-cache/*
