@@ -175,7 +175,7 @@ cc-relay configuration:
 ```yaml
 server:
   auth:
-    api_key: "${PROXY_API_KEY}"  # Optional: require specific proxy auth key
+    api_key: "${PROXY_API_KEY}" # Optional: require specific proxy auth key
 ```
 
 ### Subscription Users (Claude Code Pro/Team)
@@ -187,10 +187,10 @@ If you use Claude Code with a subscription (no API key required):
 ```yaml
 server:
   auth:
-    allow_subscription: true  # Accept subscription tokens
+    allow_subscription: true # Accept subscription tokens
 ```
 
-2. Use Claude Code normally - the token is passed through to Anthropic:
+1. Use Claude Code normally - the token is passed through to Anthropic:
 
 ```bash
 export ANTHROPIC_BASE_URL="http://localhost:8787"
@@ -208,10 +208,10 @@ You can enable multiple auth methods simultaneously. The proxy tries them in ord
 ```yaml
 server:
   auth:
-    api_key: "${PROXY_API_KEY}"     # Method 1: x-api-key header
-    allow_subscription: true         # Method 2: Bearer token (subscription)
-    allow_bearer: true               # Method 3: Generic Bearer token
-    bearer_secret: ""                # Empty = accept any bearer token
+    api_key: "${PROXY_API_KEY}" # Method 1: x-api-key header
+    allow_subscription: true # Method 2: Bearer token (subscription)
+    allow_bearer: true # Method 3: Generic Bearer token
+    bearer_secret: "" # Empty = accept any bearer token
 ```
 
 ## Configuration
@@ -336,7 +336,7 @@ go test ./...
 
 ## License
 
-MIT
+AGPL 3
 
 ## Contributing
 

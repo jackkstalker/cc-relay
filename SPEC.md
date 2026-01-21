@@ -607,7 +607,7 @@ cc-relay key remove <provider> <key-id>
 
 ## License
 
-MIT
+AGPL 3
 
 ## Contributing
 

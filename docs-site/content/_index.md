@@ -336,7 +336,7 @@ layout: hextra-home
   </div>
 
   <div class="license-box">
-    <p>MIT License - see <a href="https://github.com/omarluq/cc-relay/blob/main/LICENSE">LICENSE</a> for details</p>
+    <p>AGPL 3 License - see <a href="https://github.com/omarluq/cc-relay/blob/main/LICENSE">LICENSE</a> for details</p>
   </div>
 </div>
 

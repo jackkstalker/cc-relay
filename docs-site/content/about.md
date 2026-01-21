@@ -47,7 +47,7 @@ Created by [Omar Alani](https://github.com/omarluq)
 
 ### License
 
-CC-Relay is open source software licensed under the [MIT License](https://github.com/omarluq/cc-relay/blob/main/LICENSE).
+CC-Relay is open source software licensed under the [AGPL 3 License](https://github.com/omarluq/cc-relay/blob/main/LICENSE).
 
 ### Contributing
 
