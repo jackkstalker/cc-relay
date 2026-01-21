@@ -22,6 +22,7 @@ import (
 var (
 	logLevel  string
 	logFormat string
+	debugMode bool
 )
 
 var serveCmd = &cobra.Command{
@@ -38,6 +39,7 @@ func init() {
 	// Add logging flags
 	serveCmd.Flags().StringVar(&logLevel, "log-level", "", "log level (debug, info, warn, error) - overrides config")
 	serveCmd.Flags().StringVar(&logFormat, "log-format", "", "log format (json, pretty) - overrides config")
+	serveCmd.Flags().BoolVar(&debugMode, "debug", false, "enable debug mode (sets log level to debug and enables all debug options)")
 }
 
 func runServe(_ *cobra.Command, _ []string) error {
@@ -56,6 +58,11 @@ func runServe(_ *cobra.Command, _ []string) error {
 	}
 
 	// Apply CLI flag overrides to logging config
+	if debugMode {
+		cfg.Logging.EnableAllDebugOptions()
+		log.Info().Msg("debug mode enabled via --debug flag")
+	}
+
 	if logLevel != "" {
 		cfg.Logging.Level = logLevel
 	}
