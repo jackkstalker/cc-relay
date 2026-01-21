@@ -1,0 +1,40 @@
+// Package config provides configuration loading and parsing for cc-relay.
+package config
+
+// Config represents the complete cc-relay configuration.
+type Config struct {
+	Logging   LoggingConfig    `yaml:"logging"`
+	Providers []ProviderConfig `yaml:"providers"`
+	Server    ServerConfig     `yaml:"server"`
+}
+
+// ServerConfig defines server-level settings.
+type ServerConfig struct {
+	Listen        string `yaml:"listen"`
+	APIKey        string `yaml:"api_key"`
+	TimeoutMS     int    `yaml:"timeout_ms"`
+	MaxConcurrent int    `yaml:"max_concurrent"`
+}
+
+// ProviderConfig defines configuration for a backend LLM provider.
+type ProviderConfig struct {
+	ModelMapping map[string]string `yaml:"model_mapping"`
+	Name         string            `yaml:"name"`
+	Type         string            `yaml:"type"`
+	BaseURL      string            `yaml:"base_url"`
+	Keys         []KeyConfig       `yaml:"keys"`
+	Enabled      bool              `yaml:"enabled"`
+}
+
+// KeyConfig defines an API key with rate limits.
+type KeyConfig struct {
+	Key      string `yaml:"key"`
+	RPMLimit int    `yaml:"rpm_limit"`
+	TPMLimit int    `yaml:"tpm_limit"`
+}
+
+// LoggingConfig defines logging behavior.
+type LoggingConfig struct {
+	Level  string `yaml:"level"`
+	Format string `yaml:"format"`
+}
