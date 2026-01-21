@@ -170,15 +170,97 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status  |
 | ----------- | ----- | ------- |
-| TBD         | TBD   | Pending |
+| API-01 | Phase 1 | Pending |
+| API-02 | Phase 1 | Pending |
+| API-03 | Phase 1 | Pending |
+| API-04 | Phase 6 | Pending |
+| API-05 | Phase 1 | Pending |
+| API-06 | Phase 1 | Pending |
+| API-07 | Phase 1 | Pending |
+| SSE-01 | Phase 1 | Pending |
+| SSE-02 | Phase 1 | Pending |
+| SSE-03 | Phase 1 | Pending |
+| SSE-04 | Phase 1 | Pending |
+| SSE-05 | Phase 1 | Pending |
+| SSE-06 | Phase 1 | Pending |
+| PROV-01 | Phase 1 | Pending |
+| PROV-02 | Phase 5 | Pending |
+| PROV-03 | Phase 5 | Pending |
+| PROV-04 | Phase 6 | Pending |
+| PROV-05 | Phase 6 | Pending |
+| PROV-06 | Phase 6 | Pending |
+| PROV-07 | Phase 4 | Pending |
+| PROV-08 | Phase 4 | Pending |
+| ROUT-01 | Phase 3 | Pending |
+| ROUT-02 | Phase 3 | Pending |
+| ROUT-03 | Phase 3 | Pending |
+| ROUT-04 | Phase 11 | Pending |
+| ROUT-05 | Phase 11 | Pending |
+| ROUT-06 | Phase 11 | Pending |
+| ROUT-07 | Phase 3 | Pending |
+| ROUT-08 | Phase 4 | Pending |
+| POOL-01 | Phase 2 | Pending |
+| POOL-02 | Phase 2 | Pending |
+| POOL-03 | Phase 2 | Pending |
+| POOL-04 | Phase 2 | Pending |
+| POOL-05 | Phase 2 | Pending |
+| POOL-06 | Phase 2 | Pending |
+| CIRC-01 | Phase 4 | Pending |
+| CIRC-02 | Phase 4 | Pending |
+| CIRC-03 | Phase 4 | Pending |
+| CIRC-04 | Phase 4 | Pending |
+| CIRC-05 | Phase 4 | Pending |
+| CIRC-06 | Phase 4 | Pending |
+| CIRC-07 | Phase 4 | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Pending |
+| CONF-01 | Phase 7 | Pending |
+| CONF-02 | Phase 7 | Pending |
+| CONF-03 | Phase 7 | Pending |
+| CONF-04 | Phase 7 | Pending |
+| CONF-05 | Phase 7 | Pending |
+| CONF-06 | Phase 7 | Pending |
+| MOD-01 | Phase 8 | Pending |
+| MOD-02 | Phase 8 | Pending |
+| MOD-03 | Phase 8 | Pending |
+| MOD-04 | Phase 8 | Pending |
+| OBS-01 | Phase 8 | Pending |
+| OBS-02 | Phase 8 | Pending |
+| OBS-03 | Phase 8 | Pending |
+| OBS-04 | Phase 8 | Pending |
+| OBS-05 | Phase 8 | Pending |
+| OBS-06 | Phase 8 | Pending |
+| OBS-07 | Phase 8 | Pending |
+| GRPC-01 | Phase 9 | Pending |
+| GRPC-02 | Phase 9 | Pending |
+| GRPC-03 | Phase 9 | Pending |
+| GRPC-04 | Phase 9 | Pending |
+| GRPC-05 | Phase 9 | Pending |
+| GRPC-06 | Phase 9 | Pending |
+| TUI-01 | Phase 10 | Pending |
+| TUI-02 | Phase 10 | Pending |
+| TUI-03 | Phase 10 | Pending |
+| TUI-04 | Phase 10 | Pending |
+| TUI-05 | Phase 10 | Pending |
+| TUI-06 | Phase 10 | Pending |
+| TUI-07 | Phase 10 | Pending |
+| CLI-01 | Phase 11 | Pending |
+| CLI-02 | Phase 11 | Pending |
+| CLI-03 | Phase 11 | Pending |
+| CLI-04 | Phase 11 | Pending |
+| CLI-05 | Phase 11 | Pending |
+| CLI-06 | Phase 11 | Pending |
 
 **Coverage:**
 
-- v1 requirements: TBD total
-- Mapped to phases: TBD
-- Unmapped: TBD
+- v1 requirements: 77 total
+- Mapped to phases: 77
+- Unmapped: 0
 
 ---
 
 *Requirements defined: 2026-01-20*
-*Last updated: 2026-01-20 after initial definition*
+*Last updated: 2026-01-20 after roadmap creation*
