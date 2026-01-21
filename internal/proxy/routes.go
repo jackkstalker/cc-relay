@@ -31,8 +31,9 @@ func SetupRoutes(cfg *config.Config, provider providers.Provider, providerKey st
 func SetupRoutesWithProviders(cfg *config.Config, provider providers.Provider, providerKey string, allProviders []providers.Provider) (http.Handler, error) {
 	mux := http.NewServeMux()
 
-	// Create proxy handler
-	handler, err := NewHandler(provider, providerKey)
+	// Create proxy handler with debug options from config
+	debugOpts := cfg.Logging.DebugOptions
+	handler, err := NewHandler(provider, providerKey, debugOpts)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create handler: %w", err)
 	}
@@ -52,7 +53,7 @@ func SetupRoutesWithProviders(cfg *config.Config, provider providers.Provider, p
 		messagesHandler = AuthMiddleware(cfg.Server.APIKey)(messagesHandler)
 	}
 
-	messagesHandler = LoggingMiddleware()(messagesHandler)
+	messagesHandler = LoggingMiddleware(debugOpts)(messagesHandler)
 	messagesHandler = RequestIDMiddleware()(messagesHandler)
 
 	// Register routes

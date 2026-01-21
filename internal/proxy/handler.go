@@ -6,31 +6,36 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 
 	"github.com/rs/zerolog"
 
+	"github.com/omarluq/cc-relay/internal/config"
 	"github.com/omarluq/cc-relay/internal/providers"
 )
 
 // Handler proxies requests to a backend provider.
 type Handler struct {
-	provider providers.Provider
-	proxy    *httputil.ReverseProxy
-	apiKey   string
+	provider  providers.Provider
+	proxy     *httputil.ReverseProxy
+	apiKey    string
+	debugOpts config.DebugOptions
 }
 
 // NewHandler creates a new proxy handler.
 // The provider parameter defines the backend LLM provider to proxy to.
 // The apiKey parameter is the API key to use for authenticating with the backend.
-func NewHandler(provider providers.Provider, apiKey string) (*Handler, error) {
+// The debugOpts parameter controls debug logging behavior.
+func NewHandler(provider providers.Provider, apiKey string, debugOpts config.DebugOptions) (*Handler, error) {
 	targetURL, err := url.Parse(provider.BaseURL())
 	if err != nil {
 		return nil, fmt.Errorf("invalid provider base URL: %w", err)
 	}
 
 	h := &Handler{
-		provider: provider,
-		apiKey:   apiKey,
+		provider:  provider,
+		apiKey:    apiKey,
+		debugOpts: debugOpts,
 	}
 
 	h.proxy = &httputil.ReverseProxy{
@@ -73,6 +78,8 @@ func NewHandler(provider providers.Provider, apiKey string) (*Handler, error) {
 
 // ServeHTTP handles the proxy request.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+
 	logger := zerolog.Ctx(r.Context()).With().
 		Str("provider", h.provider.Name()).
 		Str("backend_url", h.provider.BaseURL()).
@@ -81,8 +88,37 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Update context with provider-aware logger
 	r = r.WithContext(logger.WithContext(r.Context()))
 
+	// Attach TLS trace if debug metrics enabled
+	var getTLSMetrics func() TLSMetrics
+	if h.debugOpts.LogTLSMetrics {
+		newCtx, metricsFunc := AttachTLSTrace(r.Context(), r)
+		r = r.WithContext(newCtx)
+		getTLSMetrics = metricsFunc
+	}
+
 	// Log proxy start
 	logger.Debug().Msg("proxying request to backend")
 
+	// Proxy request
+	backendStart := time.Now()
 	h.proxy.ServeHTTP(w, r)
+	backendTime := time.Since(backendStart)
+
+	// Log TLS metrics if collected
+	if getTLSMetrics != nil {
+		tlsMetrics := getTLSMetrics()
+		LogTLSMetrics(r.Context(), tlsMetrics, h.debugOpts)
+	}
+
+	// Log proxy metrics
+	if h.debugOpts.IsEnabled() || logger.GetLevel() <= zerolog.DebugLevel {
+		proxyMetrics := ProxyMetrics{
+			BackendTime: backendTime,
+			TotalTime:   time.Since(start),
+			// BytesSent/BytesReceived would require wrapping http.ResponseWriter
+			// StreamingEvents would require parsing SSE stream
+			// Defer these to future enhancement
+		}
+		LogProxyMetrics(r.Context(), proxyMetrics, h.debugOpts)
+	}
 }

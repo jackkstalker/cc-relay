@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/omarluq/cc-relay/internal/config"
 	"github.com/omarluq/cc-relay/internal/providers"
 )
 
@@ -15,7 +16,7 @@ func TestNewHandler_ValidProvider(t *testing.T) {
 
 	provider := providers.NewAnthropicProvider("test", "https://api.anthropic.com")
 
-	handler, err := NewHandler(provider, "test-key")
+	handler, err := NewHandler(provider, "test-key", config.DebugOptions{})
 	if err != nil {
 		t.Fatalf("NewHandler failed: %v", err)
 	}
@@ -30,7 +31,7 @@ func TestNewHandler_InvalidURL(t *testing.T) {
 	// Create a mock provider with invalid URL
 	provider := &mockProvider{baseURL: "://invalid-url"}
 
-	_, err := NewHandler(provider, "test-key")
+	_, err := NewHandler(provider, "test-key", config.DebugOptions{})
 	if err == nil {
 		t.Error("Expected error for invalid base URL, got nil")
 	}
@@ -57,7 +58,7 @@ func TestHandler_ForwardsAnthropicHeaders(t *testing.T) {
 	// Create provider pointing to mock backend
 	provider := providers.NewAnthropicProvider("test", backend.URL)
 
-	handler, err := NewHandler(provider, "test-key")
+	handler, err := NewHandler(provider, "test-key", config.DebugOptions{})
 	if err != nil {
 		t.Fatalf("NewHandler failed: %v", err)
 	}
@@ -81,7 +82,7 @@ func TestHandler_HasErrorHandler(t *testing.T) {
 
 	provider := providers.NewAnthropicProvider("test", "https://api.anthropic.com")
 
-	handler, err := NewHandler(provider, "test-key")
+	handler, err := NewHandler(provider, "test-key", config.DebugOptions{})
 	if err != nil {
 		t.Fatalf("NewHandler failed: %v", err)
 	}
@@ -97,7 +98,7 @@ func TestHandler_StructureCorrect(t *testing.T) {
 
 	provider := providers.NewAnthropicProvider("test", "https://api.anthropic.com")
 
-	handler, err := NewHandler(provider, "test-key")
+	handler, err := NewHandler(provider, "test-key", config.DebugOptions{})
 	if err != nil {
 		t.Fatalf("NewHandler failed: %v", err)
 	}
@@ -143,7 +144,7 @@ func TestHandler_PreservesToolUseId(t *testing.T) {
 	// Create provider pointing to mock backend
 	provider := providers.NewAnthropicProvider("test", backend.URL)
 
-	handler, err := NewHandler(provider, "test-key")
+	handler, err := NewHandler(provider, "test-key", config.DebugOptions{})
 	if err != nil {
 		t.Fatalf("NewHandler failed: %v", err)
 	}
