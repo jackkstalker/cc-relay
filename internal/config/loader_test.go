@@ -7,6 +7,8 @@ import (
 )
 
 func TestLoad_ValidYAML(t *testing.T) {
+	t.Parallel()
+
 	yamlContent := `
 server:
   listen: "127.0.0.1:8787"
@@ -97,6 +99,8 @@ logging:
 }
 
 func TestLoad_EnvironmentExpansion(t *testing.T) {
+	t.Parallel()
+
 	// Set a test environment variable
 	testKey := "TEST_API_KEY_12345"
 	testValue := "sk-test-value"
@@ -146,6 +150,8 @@ logging:
 }
 
 func TestLoad_InvalidYAML(t *testing.T) {
+	t.Parallel()
+
 	yamlContent := `
 server:
   listen: "127.0.0.1:8787
@@ -164,6 +170,8 @@ server:
 }
 
 func TestLoad_MissingFile(t *testing.T) {
+	t.Parallel()
+
 	_, err := Load("/nonexistent/path/to/config.yaml")
 	if err == nil {
 		t.Fatal("Expected error for missing file, got nil")
@@ -175,6 +183,8 @@ func TestLoad_MissingFile(t *testing.T) {
 }
 
 func TestLoad_ServerAPIKey(t *testing.T) {
+	t.Parallel()
+
 	yamlContent := `
 server:
   listen: "127.0.0.1:8787"

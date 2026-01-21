@@ -6,6 +6,8 @@ import (
 )
 
 func TestNewAnthropicProvider(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name         string
 		providerName string
@@ -28,6 +30,8 @@ func TestNewAnthropicProvider(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			provider := NewAnthropicProvider(tt.providerName, tt.baseURL)
 
 			if provider.Name() != tt.providerName {
@@ -42,6 +46,8 @@ func TestNewAnthropicProvider(t *testing.T) {
 }
 
 func TestAuthenticate(t *testing.T) {
+	t.Parallel()
+
 	provider := NewAnthropicProvider("test", "")
 
 	req, err := http.NewRequest("POST", "https://api.example.com/v1/messages", http.NoBody)
@@ -64,6 +70,8 @@ func TestAuthenticate(t *testing.T) {
 }
 
 func TestForwardHeaders(t *testing.T) {
+	t.Parallel()
+
 	provider := NewAnthropicProvider("test", "")
 
 	// Create original headers with mix of anthropic-* and other headers
@@ -106,6 +114,8 @@ func TestForwardHeaders(t *testing.T) {
 }
 
 func TestSupportsStreaming(t *testing.T) {
+	t.Parallel()
+
 	provider := NewAnthropicProvider("test", "")
 
 	if !provider.SupportsStreaming() {
@@ -114,6 +124,8 @@ func TestSupportsStreaming(t *testing.T) {
 }
 
 func TestForwardHeaders_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	provider := NewAnthropicProvider("test", "")
 
 	tests := []struct {
@@ -125,6 +137,7 @@ func TestForwardHeaders_EdgeCases(t *testing.T) {
 			name:            "empty headers",
 			originalHeaders: http.Header{},
 			checkFunc: func(t *testing.T, h http.Header) {
+				t.Helper()
 				if h.Get("Content-Type") != "application/json" {
 					t.Error("Expected Content-Type to be set even with empty original headers")
 				}
@@ -137,6 +150,7 @@ func TestForwardHeaders_EdgeCases(t *testing.T) {
 				"anthropic-beta":    []string{"feature-1", "feature-2"},
 			},
 			checkFunc: func(t *testing.T, h http.Header) {
+				t.Helper()
 				if h.Get("anthropic-version") != "2023-06-01" {
 					t.Error("Expected anthropic-version to be forwarded")
 				}
@@ -152,6 +166,7 @@ func TestForwardHeaders_EdgeCases(t *testing.T) {
 				"accept": []string{"application/json"},
 			},
 			checkFunc: func(t *testing.T, h http.Header) {
+				t.Helper()
 				if h.Get("accept") != "" {
 					t.Error("Expected short header starting with 'a' to not be forwarded")
 				}
@@ -161,6 +176,8 @@ func TestForwardHeaders_EdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			forwardedHeaders := provider.ForwardHeaders(tt.originalHeaders)
 			tt.checkFunc(t, forwardedHeaders)
 		})
