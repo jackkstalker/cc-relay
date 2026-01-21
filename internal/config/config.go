@@ -71,10 +71,11 @@ type KeyConfig struct {
 
 // LoggingConfig defines logging behavior.
 type LoggingConfig struct {
-	Level  string `yaml:"level"`  // debug, info, warn, error
-	Format string `yaml:"format"` // json, console
-	Output string `yaml:"output"` // stdout, stderr, or file path
-	Pretty bool   `yaml:"pretty"` // enable colored console output
+	Level        string       `yaml:"level"`         // debug, info, warn, error
+	Format       string       `yaml:"format"`        // json, console
+	Output       string       `yaml:"output"`        // stdout, stderr, or file path
+	Pretty       bool         `yaml:"pretty"`        // enable colored console output
+	DebugOptions DebugOptions `yaml:"debug_options"` // granular debug logging controls
 }
 
 // ParseLevel converts a string log level to zerolog.Level.
@@ -92,4 +93,46 @@ func (l *LoggingConfig) ParseLevel() zerolog.Level {
 	default:
 		return zerolog.InfoLevel
 	}
+}
+
+// EnableAllDebugOptions turns on all debug logging features.
+// Used by --debug CLI flag shortcut.
+func (l *LoggingConfig) EnableAllDebugOptions() {
+	l.Level = "debug"
+	l.DebugOptions = DebugOptions{
+		LogRequestBody:     true,
+		LogResponseHeaders: true,
+		LogTLSMetrics:      true,
+		MaxBodyLogSize:     1000,
+	}
+}
+
+// DebugOptions defines granular debug logging controls.
+type DebugOptions struct {
+	// LogRequestBody enables logging of request body in debug mode.
+	// Body is truncated to MaxBodyLogSize to prevent massive logs.
+	LogRequestBody bool `yaml:"log_request_body"`
+
+	// LogResponseHeaders enables logging of response headers in debug mode.
+	LogResponseHeaders bool `yaml:"log_response_headers"`
+
+	// LogTLSMetrics enables logging of TLS connection metrics (version, handshake time, reuse).
+	LogTLSMetrics bool `yaml:"log_tls_metrics"`
+
+	// MaxBodyLogSize is the maximum number of bytes to log from request/response bodies.
+	// Default: 1000 bytes. Set to 0 for unlimited (not recommended).
+	MaxBodyLogSize int `yaml:"max_body_log_size"`
+}
+
+// GetMaxBodyLogSize returns the effective max body log size with default fallback.
+func (d *DebugOptions) GetMaxBodyLogSize() int {
+	if d.MaxBodyLogSize <= 0 {
+		return 1000 // Default: 1KB
+	}
+	return d.MaxBodyLogSize
+}
+
+// IsEnabled returns true if any debug option is enabled.
+func (d *DebugOptions) IsEnabled() bool {
+	return d.LogRequestBody || d.LogResponseHeaders || d.LogTLSMetrics
 }
