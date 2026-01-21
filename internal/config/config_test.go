@@ -216,3 +216,132 @@ func TestServerConfig_GetEffectiveAPIKey(t *testing.T) {
 		})
 	}
 }
+
+func TestLoggingConfig_EnableAllDebugOptions(t *testing.T) {
+	t.Parallel()
+
+	cfg := LoggingConfig{
+		Level: "info",
+		DebugOptions: DebugOptions{
+			LogRequestBody:     false,
+			LogResponseHeaders: false,
+			LogTLSMetrics:      false,
+			MaxBodyLogSize:     0,
+		},
+	}
+
+	cfg.EnableAllDebugOptions()
+
+	// Verify level is set to debug
+	if cfg.Level != "debug" {
+		t.Errorf("Expected level 'debug', got %q", cfg.Level)
+	}
+
+	// Verify all debug options are enabled
+	if !cfg.DebugOptions.LogRequestBody {
+		t.Error("Expected LogRequestBody to be true")
+	}
+	if !cfg.DebugOptions.LogResponseHeaders {
+		t.Error("Expected LogResponseHeaders to be true")
+	}
+	if !cfg.DebugOptions.LogTLSMetrics {
+		t.Error("Expected LogTLSMetrics to be true")
+	}
+	if cfg.DebugOptions.MaxBodyLogSize != 1000 {
+		t.Errorf("Expected MaxBodyLogSize 1000, got %d", cfg.DebugOptions.MaxBodyLogSize)
+	}
+}
+
+func TestDebugOptions_GetMaxBodyLogSize(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		opts     DebugOptions
+		expected int
+	}{
+		{
+			name:     "default value when zero",
+			opts:     DebugOptions{MaxBodyLogSize: 0},
+			expected: 1000,
+		},
+		{
+			name:     "default value when negative",
+			opts:     DebugOptions{MaxBodyLogSize: -1},
+			expected: 1000,
+		},
+		{
+			name:     "custom value",
+			opts:     DebugOptions{MaxBodyLogSize: 5000},
+			expected: 5000,
+		},
+		{
+			name:     "small custom value",
+			opts:     DebugOptions{MaxBodyLogSize: 100},
+			expected: 100,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.opts.GetMaxBodyLogSize()
+			if got != tt.expected {
+				t.Errorf("GetMaxBodyLogSize() = %d, want %d", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestDebugOptions_IsEnabled(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		opts     DebugOptions
+		expected bool
+	}{
+		{
+			name:     "all disabled",
+			opts:     DebugOptions{},
+			expected: false,
+		},
+		{
+			name:     "only LogRequestBody",
+			opts:     DebugOptions{LogRequestBody: true},
+			expected: true,
+		},
+		{
+			name:     "only LogResponseHeaders",
+			opts:     DebugOptions{LogResponseHeaders: true},
+			expected: true,
+		},
+		{
+			name:     "only LogTLSMetrics",
+			opts:     DebugOptions{LogTLSMetrics: true},
+			expected: true,
+		},
+		{
+			name:     "all enabled",
+			opts:     DebugOptions{LogRequestBody: true, LogResponseHeaders: true, LogTLSMetrics: true},
+			expected: true,
+		},
+		{
+			name:     "MaxBodyLogSize alone does not enable",
+			opts:     DebugOptions{MaxBodyLogSize: 5000},
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.opts.IsEnabled()
+			if got != tt.expected {
+				t.Errorf("IsEnabled() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

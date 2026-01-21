@@ -73,7 +73,7 @@ func TestAPIKeyAuthenticator_Validate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			req := httptest.NewRequest(http.MethodPost, "/v1/messages", nil)
+			req := httptest.NewRequest(http.MethodPost, "/v1/messages", http.NoBody)
 			if tt.apiKey != "" {
 				req.Header.Set("x-api-key", tt.apiKey)
 			}
@@ -179,7 +179,7 @@ func TestBearerAuthenticator_Validate(t *testing.T) {
 
 			authenticator := auth.NewBearerAuthenticator(tt.secret)
 
-			req := httptest.NewRequest(http.MethodPost, "/v1/messages", nil)
+			req := httptest.NewRequest(http.MethodPost, "/v1/messages", http.NoBody)
 			if tt.authHeader != "" {
 				req.Header.Set("Authorization", tt.authHeader)
 			}
@@ -266,7 +266,7 @@ func TestChainAuthenticator_Validate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			req := httptest.NewRequest(http.MethodPost, "/v1/messages", nil)
+			req := httptest.NewRequest(http.MethodPost, "/v1/messages", http.NoBody)
 			if tt.apiKey != "" {
 				req.Header.Set("x-api-key", tt.apiKey)
 			}
@@ -295,5 +295,27 @@ func TestChainAuthenticator_Type(t *testing.T) {
 
 	if chainAuth.Type() != auth.TypeNone {
 		t.Errorf("Type() = %q, want %q", chainAuth.Type(), auth.TypeNone)
+	}
+}
+
+// TestChainAuthenticator_EmptyChain tests the chain with no authenticators.
+func TestChainAuthenticator_EmptyChain(t *testing.T) {
+	t.Parallel()
+
+	chainAuth := auth.NewChainAuthenticator() // No authenticators
+
+	req := httptest.NewRequest(http.MethodPost, "/v1/messages", nil)
+	result := chainAuth.Validate(req)
+
+	if result.Valid {
+		t.Error("Expected Valid=false for empty chain")
+	}
+
+	if result.Type != auth.TypeNone {
+		t.Errorf("Expected Type=none, got %q", result.Type)
+	}
+
+	if result.Error != "no authentication configured" {
+		t.Errorf("Expected error 'no authentication configured', got %q", result.Error)
 	}
 }

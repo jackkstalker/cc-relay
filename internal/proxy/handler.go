@@ -112,7 +112,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Log proxy metrics
 	if h.debugOpts.IsEnabled() || logger.GetLevel() <= zerolog.DebugLevel {
-		proxyMetrics := ProxyMetrics{
+		proxyMetrics := Metrics{
 			BackendTime: backendTime,
 			TotalTime:   time.Since(start),
 			// BytesSent/BytesReceived would require wrapping http.ResponseWriter

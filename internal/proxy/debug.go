@@ -16,7 +16,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Sensitive patterns to redact from request bodies
+// Sensitive patterns to redact from request bodies.
 var sensitivePatterns = []*regexp.Regexp{
 	regexp.MustCompile(`"api_key"\s*:\s*"[^"]+"`),
 	regexp.MustCompile(`"x-api-key"\s*:\s*"[^"]+"`),
@@ -29,16 +29,16 @@ var sensitivePatterns = []*regexp.Regexp{
 
 // TLSMetrics holds TLS connection timing and metadata.
 type TLSMetrics struct {
-	Version      string
-	Reused       bool
-	DNSTime      time.Duration
-	ConnectTime  time.Duration
-	TLSTime      time.Duration
-	HasMetrics   bool
+	DNSTime     time.Duration
+	ConnectTime time.Duration
+	TLSTime     time.Duration
+	Version     string
+	Reused      bool
+	HasMetrics  bool
 }
 
-// ProxyMetrics holds proxy-level performance metrics.
-type ProxyMetrics struct {
+// Metrics holds proxy-level performance metrics.
+type Metrics struct {
 	BackendTime     time.Duration
 	TotalTime       time.Duration
 	BytesSent       int64
@@ -61,7 +61,12 @@ func LogRequestDetails(ctx context.Context, r *http.Request, opts config.DebugOp
 	// Read body
 	var bodyBytes []byte
 	if r.Body != nil {
-		bodyBytes, _ = io.ReadAll(r.Body)
+		var err error
+		bodyBytes, err = io.ReadAll(r.Body)
+		if err != nil {
+			logger.Debug().Err(err).Msg("failed to read request body")
+			return
+		}
 		// Restore body for downstream handlers
 		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
@@ -110,7 +115,7 @@ func LogRequestDetails(ctx context.Context, r *http.Request, opts config.DebugOp
 }
 
 // LogResponseDetails logs response headers and streaming event count in debug mode.
-func LogResponseDetails(ctx context.Context, headers http.Header, statusCode int, eventCount int, opts config.DebugOptions) {
+func LogResponseDetails(ctx context.Context, headers http.Header, statusCode, eventCount int, opts config.DebugOptions) {
 	if !opts.LogResponseHeaders {
 		return
 	}
@@ -178,7 +183,7 @@ func LogTLSMetrics(ctx context.Context, metrics TLSMetrics, opts config.DebugOpt
 }
 
 // LogProxyMetrics logs proxy-level performance metrics in debug mode.
-func LogProxyMetrics(ctx context.Context, metrics ProxyMetrics, opts config.DebugOptions) {
+func LogProxyMetrics(ctx context.Context, metrics Metrics, _ config.DebugOptions) {
 	// Always log proxy metrics if debug level, regardless of specific flag
 	logger := zerolog.Ctx(ctx)
 	if logger.GetLevel() > zerolog.DebugLevel {
@@ -204,7 +209,7 @@ func LogProxyMetrics(ctx context.Context, metrics ProxyMetrics, opts config.Debu
 
 // AttachTLSTrace attaches httptrace to request for TLS metric collection.
 // Returns updated context with trace and a function to retrieve metrics.
-func AttachTLSTrace(ctx context.Context, r *http.Request) (context.Context, func() TLSMetrics) {
+func AttachTLSTrace(ctx context.Context, _ *http.Request) (context.Context, func() TLSMetrics) {
 	metrics := &TLSMetrics{}
 	var dnsStart, connectStart, tlsStart time.Time
 

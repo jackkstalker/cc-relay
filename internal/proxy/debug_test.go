@@ -145,7 +145,7 @@ func TestLogProxyMetrics(t *testing.T) {
 	logger := zerolog.New(&buf).Level(zerolog.DebugLevel)
 	ctx := logger.WithContext(context.Background())
 
-	metrics := ProxyMetrics{
+	metrics := Metrics{
 		BackendTime:     250 * time.Millisecond,
 		TotalTime:       300 * time.Millisecond,
 		BytesSent:       1024,
@@ -188,4 +188,164 @@ func TestDebugOptions_GetMaxBodyLogSize(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestTLSVersionString(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		version  uint16
+		expected string
+	}{
+		{"TLS 1.0", 0x0301, "TLS 1.0"},
+		{"TLS 1.1", 0x0302, "TLS 1.1"},
+		{"TLS 1.2", 0x0303, "TLS 1.2"},
+		{"TLS 1.3", 0x0304, "TLS 1.3"},
+		{"unknown", 0x0000, "unknown"},
+		{"unknown high", 0xFFFF, "unknown"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			got := tlsVersionString(tt.version)
+			if got != tt.expected {
+				t.Errorf("tlsVersionString(%#x) = %s, want %s", tt.version, got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestAttachTLSTrace_ReturnsMetricsFunction(t *testing.T) {
+	t.Parallel()
+
+	req := httptest.NewRequest("GET", "/test", nil)
+	ctx := req.Context()
+
+	newCtx, getMetrics := AttachTLSTrace(ctx, req)
+
+	// New context should be different (has trace attached)
+	if newCtx == ctx {
+		t.Error("Expected new context with trace attached")
+	}
+
+	// getMetrics should return TLSMetrics
+	metrics := getMetrics()
+
+	// Before any TLS handshake, HasMetrics should be false
+	if metrics.HasMetrics {
+		t.Error("Expected HasMetrics=false before TLS handshake")
+	}
+}
+
+func TestLogTLSMetrics_SkipsWhenDisabled(t *testing.T) {
+	t.Parallel()
+
+	var buf bytes.Buffer
+	logger := zerolog.New(&buf).Level(zerolog.DebugLevel)
+	ctx := logger.WithContext(context.Background())
+
+	metrics := TLSMetrics{
+		Version:    "TLS 1.3",
+		HasMetrics: true,
+	}
+
+	// Disabled option
+	opts := config.DebugOptions{LogTLSMetrics: false}
+	LogTLSMetrics(ctx, metrics, opts)
+
+	if buf.Len() > 0 {
+		t.Errorf("Expected no log output when LogTLSMetrics disabled, got: %s", buf.String())
+	}
+}
+
+func TestLogTLSMetrics_SkipsWhenNoMetrics(t *testing.T) {
+	t.Parallel()
+
+	var buf bytes.Buffer
+	logger := zerolog.New(&buf).Level(zerolog.DebugLevel)
+	ctx := logger.WithContext(context.Background())
+
+	metrics := TLSMetrics{
+		HasMetrics: false, // No metrics collected
+	}
+
+	opts := config.DebugOptions{LogTLSMetrics: true}
+	LogTLSMetrics(ctx, metrics, opts)
+
+	if buf.Len() > 0 {
+		t.Errorf("Expected no log output when HasMetrics=false, got: %s", buf.String())
+	}
+}
+
+func TestLogResponseDetails_SkipsWhenDisabled(t *testing.T) {
+	t.Parallel()
+
+	var buf bytes.Buffer
+	logger := zerolog.New(&buf).Level(zerolog.DebugLevel)
+	ctx := logger.WithContext(context.Background())
+
+	headers := http.Header{}
+	headers.Set("Content-Type", "application/json")
+
+	opts := config.DebugOptions{LogResponseHeaders: false}
+	LogResponseDetails(ctx, headers, 200, 0, opts)
+
+	if buf.Len() > 0 {
+		t.Errorf("Expected no log output when LogResponseHeaders disabled, got: %s", buf.String())
+	}
+}
+
+func TestLogProxyMetrics_SkipsAtHigherLogLevel(t *testing.T) {
+	t.Parallel()
+
+	var buf bytes.Buffer
+	logger := zerolog.New(&buf).Level(zerolog.InfoLevel) // Not debug
+	ctx := logger.WithContext(context.Background())
+
+	metrics := Metrics{
+		BackendTime: 100 * time.Millisecond,
+		TotalTime:   150 * time.Millisecond,
+	}
+
+	opts := config.DebugOptions{}
+	LogProxyMetrics(ctx, metrics, opts)
+
+	if buf.Len() > 0 {
+		t.Errorf("Expected no log output at info level, got: %s", buf.String())
+	}
+}
+
+func TestLogRequestDetails_SkipsAtHigherLogLevel(t *testing.T) {
+	t.Parallel()
+
+	var buf bytes.Buffer
+	logger := zerolog.New(&buf).Level(zerolog.InfoLevel) // Not debug
+	ctx := logger.WithContext(context.Background())
+
+	body := `{"model":"claude-3"}`
+	req := httptest.NewRequest("POST", "/v1/messages", strings.NewReader(body))
+	opts := config.DebugOptions{LogRequestBody: true, MaxBodyLogSize: 1000}
+
+	LogRequestDetails(ctx, req, opts)
+
+	if buf.Len() > 0 {
+		t.Errorf("Expected no log output at info level, got: %s", buf.String())
+	}
+}
+
+func TestLogRequestDetails_HandlesNilBody(t *testing.T) {
+	t.Parallel()
+
+	var buf bytes.Buffer
+	logger := zerolog.New(&buf).Level(zerolog.DebugLevel)
+	ctx := logger.WithContext(context.Background())
+
+	req := httptest.NewRequest("GET", "/test", nil)
+	req.Body = nil // Explicitly nil
+	opts := config.DebugOptions{LogRequestBody: true, MaxBodyLogSize: 1000}
+
+	// Should not panic
+	LogRequestDetails(ctx, req, opts)
 }
