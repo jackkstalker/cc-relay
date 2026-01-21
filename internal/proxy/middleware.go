@@ -2,9 +2,12 @@
 package proxy
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"crypto/subtle"
+	"io"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/omarluq/cc-relay/internal/auth"
@@ -133,11 +136,20 @@ func LoggingMiddleware() func(http.Handler) http.Handler {
 			}
 
 			// Log request start with arrow and request ID
-			zerolog.Ctx(r.Context()).Info().
+			logEvent := zerolog.Ctx(r.Context()).Info().
 				Str("method", r.Method).
 				Str("path", r.URL.Path).
-				Str("req_id", shortID).
-				Msgf("%s %s", r.Method, r.URL.Path)
+				Str("req_id", shortID)
+
+			// Add request body preview in debug mode
+			if zerolog.GlobalLevel() <= zerolog.DebugLevel {
+				bodyPreview := getBodyPreview(r)
+				if bodyPreview != "" {
+					logEvent = logEvent.Str("body_preview", bodyPreview)
+				}
+			}
+
+			logEvent.Msgf("%s %s", r.Method, r.URL.Path)
 
 			// Serve request
 			next.ServeHTTP(wrapped, r)
@@ -188,6 +200,45 @@ func formatDuration(d time.Duration) string {
 // formatCompletionMessage formats the completion message with status.
 func formatCompletionMessage(status int, symbol, duration string) string {
 	return symbol + " " + http.StatusText(status) + " (" + duration + ")"
+}
+
+// getBodyPreview reads the first 200 characters of the request body.
+// Redacts any "api_key" or "key" fields to prevent logging sensitive data.
+// Returns empty string if body cannot be read or is empty.
+func getBodyPreview(r *http.Request) string {
+	if r.Body == nil {
+		return ""
+	}
+
+	// Read body (limited to 500 bytes for safety)
+	body, err := io.ReadAll(io.LimitReader(r.Body, 500))
+	if err != nil || len(body) == 0 {
+		return ""
+	}
+
+	// Restore body for downstream handlers
+	r.Body = io.NopCloser(io.MultiReader(bytes.NewReader(body), r.Body))
+
+	// Convert to string and truncate to 200 chars
+	preview := string(body)
+	if len(preview) > 200 {
+		preview = preview[:200] + "..."
+	}
+
+	// Redact sensitive fields using regex
+	preview = redactSensitiveFields(preview)
+
+	return preview
+}
+
+var (
+	// Match "api_key": "value" or "key": "value" patterns
+	apiKeyPattern = regexp.MustCompile(`("api_key"\s*:\s*")[^"]*(")|("key"\s*:\s*")[^"]*(")"`)
+)
+
+// redactSensitiveFields replaces api_key and key values with [REDACTED].
+func redactSensitiveFields(s string) string {
+	return apiKeyPattern.ReplaceAllString(s, `${1}[REDACTED]${2}${3}[REDACTED]${4}`)
 }
 
 // responseWriter wraps http.ResponseWriter to capture status code.
