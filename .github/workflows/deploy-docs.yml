@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - initial-relay-proxy
     paths:
       - 'docs-site/**'
       - '.github/workflows/deploy-docs.yml'
