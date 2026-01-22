@@ -20,21 +20,21 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: "1.25"
           cache: true
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
 
       - name: Test
-        run: go test -v -race -coverprofile=coverage.out ./...
+        run: go test -v -race -coverprofile=coverage.txt ./...
 
       - name: Upload coverage
         uses: codecov/codecov-action@v5
         with:
           file: ./coverage.out
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          slug: omarluq/cc-relay
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
     name: Build
@@ -54,7 +54,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: "1.25"
           cache: true
 
       - name: Build
